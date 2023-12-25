@@ -1,5 +1,7 @@
 package com.example.flux.user.model;
 
+import com.example.flux.room.model.RoomEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -7,6 +9,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,6 +48,10 @@ public class UserModel implements UserDetails {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Roles role;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "room_id", referencedColumnName = "id")
+    private RoomEntity roomEntity;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

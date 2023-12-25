@@ -16,9 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-
-// todo 1:04:32 Spring Boot 3 + Spring Security 6 - JWT auth amigoscode
-
 @Service
 @PropertySource("classpath:application.properties")
 public class JwtService {
