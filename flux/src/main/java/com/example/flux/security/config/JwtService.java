@@ -1,10 +1,15 @@
 package com.example.flux.security.config;
 
+import com.example.flux.security.exception.NoGrantedAuthorityException;
+import com.example.flux.user.model.Roles;
+import com.example.flux.user.model.UserModel;
+import com.example.flux.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,11 +23,13 @@ import java.util.function.Function;
 
 @Service
 @PropertySource("classpath:application.properties")
+@RequiredArgsConstructor
 public class JwtService {
 
     @Value("${secret_key}")
     private String secreteKey;
 
+    private final UserRepository userRepository;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -54,7 +61,7 @@ public class JwtService {
         return Jwts.builder().setClaims(claim)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000*60*24))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -70,6 +77,18 @@ public class JwtService {
 
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
+    }
+
+    public void checkRoleAdmin(String token) throws NoGrantedAuthorityException {
+
+        String username = this.extractUsername(token);
+
+        UserModel userToCheck = this.userRepository.findUserModelByUsername(username)
+                .orElseThrow();
+
+        if (!userToCheck.getRole().equals(Roles.ROLE_ADMIN)) {
+            throw new NoGrantedAuthorityException("No granted authority for this operation");
+        }
     }
 
 

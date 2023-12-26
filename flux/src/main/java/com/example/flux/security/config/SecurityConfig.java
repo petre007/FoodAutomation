@@ -24,7 +24,7 @@ public class SecurityConfig {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/auth/login", "/api/auth/register")
+                .requestMatchers("/api/auth/login", "/api/auth/register", "/room/get_all_rooms/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

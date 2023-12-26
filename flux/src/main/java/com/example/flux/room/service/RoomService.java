@@ -2,9 +2,13 @@ package com.example.flux.room.service;
 
 import com.example.flux.room.model.RoomEntity;
 import com.example.flux.room.repository.RoomRepository;
+import com.example.flux.security.config.JwtService;
+import com.example.flux.security.exception.NoGrantedAuthorityException;
+import com.example.flux.user.model.Roles;
 import com.example.flux.user.model.UserModel;
 import com.example.flux.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.web.server.authorization.AuthorizationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,9 +20,11 @@ public class RoomService {
 
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
+    private final JwtService jwtService;
 
     @Transactional
-    public List<RoomEntity> getAllRooms() {
+    public List<RoomEntity> getAllRooms(String token) throws NoGrantedAuthorityException {
+        this.jwtService.checkRoleAdmin(token);
         return this.roomRepository.findAll();
     }
 
@@ -33,13 +39,16 @@ public class RoomService {
     }
 
     @Transactional
-    public void assignRoomToUser(String username, RoomEntity roomEntity) {
-        UserModel userModel = this.userRepository.findUserModelByUsername(username)
+    public void assignRoomToUser(String token, String user, RoomEntity roomEntity) throws NoGrantedAuthorityException {
+
+       this.jwtService.checkRoleAdmin(token);
+
+        UserModel userToAssign = this.userRepository.findUserModelByUsername(user)
                 .orElseThrow();
 
-        userModel.setRoomEntity(roomEntity);
+        userToAssign.setRoomEntity(roomEntity);
 
-        this.userRepository.save(userModel);
+        this.userRepository.save(userToAssign);
     }
 
     @Transactional
