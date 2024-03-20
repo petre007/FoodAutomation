@@ -6,16 +6,17 @@ from connector.serial_comunication import SerialComunication
 app = Flask(__name__)
 
 # Kafka producer
-producer = Producer({'bootstrap.servers': '<insert_ip>:9093', 'broker.address.family': 'v4'})
-sercom = SerialComunication("/dev/ttyUSB0", 9600)
+producer = Producer({'bootstrap.servers': '<insert_external_ip>:9094', 'broker.address.family': 'v4'})
+sercom = SerialComunication("/dev/ttyUSB0", 9600) # arduino
 
 
 @app.route('/serial_comunication', methods=['POST'])
 def serial_communication_test():
     try:
-        producer.produce('data_from_arduino', value=sercom.read_data())
-        producer.flush()
-        return "Message was sent to kafka"
+        while True:
+            print("Data from arduino: " + sercom.read_data())
+            producer.produce('data_from_arduino', value=sercom.read_data())
+            producer.flush()
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
