@@ -1,25 +1,23 @@
 package com.example.flux.robot.stream.consumer;
 
-import org.apache.kafka.clients.admin.NewTopic;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import com.example.flux.kafka.utils.KafkaUtils;
+import com.example.flux.robot.service.RobotService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.config.TopicBuilder;
+import org.springframework.stereotype.Component;
 
-@Configuration
+@Component
+@RequiredArgsConstructor
+@Slf4j
 public class RobotConsumer {
 
-    @Bean
-    public NewTopic topic() {
-        return TopicBuilder.name("data_from_arduino")
-                .partitions(10)
-                .replicas(1)
-                .build();
-    }
+    private final RobotService robotService;
 
-    @KafkaListener(id = "myId", topics = "data_from_arduino")
+    @KafkaListener(id = "ULTRASONIC", topics = KafkaUtils.ULTRASONIC_DATA_CONSUMER)
     public void listen(String in) {
-        System.out.println(in);
+        log.info(in + " was collected from " + KafkaUtils.ULTRASONIC_DATA_CONSUMER + " topic");
+        this.robotService.collectDataFromUltrasonic(Integer.parseInt(in), 2);
     }
 
 }
