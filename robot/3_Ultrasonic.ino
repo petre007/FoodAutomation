@@ -14,7 +14,7 @@ void Ultrasonic_Sensor_Module()
 {
     int Distance = 0; 
     Distance = checkdistance();
-    Serial.print("ULTRASONIC");1
+    Serial.print("ULTRASONIC");
     Serial.println(Distance);
     delay(200);
 }
