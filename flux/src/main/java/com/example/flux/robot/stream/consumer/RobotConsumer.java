@@ -17,7 +17,7 @@ public class RobotConsumer {
     @KafkaListener(id = "ULTRASONIC", topics = KafkaUtils.ULTRASONIC_DATA_CONSUMER)
     public void listen(String in) {
         log.info(in + " was collected from " + KafkaUtils.ULTRASONIC_DATA_CONSUMER + " topic");
-        this.robotService.collectDataFromUltrasonic(Integer.parseInt(in), 2);
+        this.robotService.collectDataFromUltrasonic(Integer.parseInt(in), 1);
     }
 
 }

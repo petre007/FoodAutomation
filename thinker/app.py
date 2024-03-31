@@ -1,61 +1,25 @@
-from flask import Flask, jsonify
-from confluent_kafka import Producer, Consumer, KafkaError
-
+import logging
+from flask import Flask
+from concurrent.futures import ThreadPoolExecutor
 from connector.serial_comunication import SerialComunication
 
 app = Flask(__name__)
 
-conf = {'bootstrap.servers': '192.168.1.128:9094',
-        'broker.address.family': 'v4',
-        "default.topic.config": {"auto.offset.reset": "earliest"},
-        'group.id': 'ULTRASONIC'}
+connection_created = False
 
-# Kafka producer
-producer = Producer(conf)
-consumer = Consumer(conf)
-sercom = SerialComunication("/dev/ttyUSB0", 9600)
-
-
-@app.route('/serial_comunication', methods=['POST'])
-def serial_communication_test():
-    try:
-        while True:
-            if "ULTRASONIC" in sercom.read_data():
-                print("Data from arduino: " + sercom.read_data())
-                producer.produce('data_from_ultrasonic',
-                                 value=sercom.read_data().replace("ULTRASONIC", ""))
-                producer.flush()
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-
-# this part will be integrated in another microservice
-consumer.subscribe(['collected_data_from_ultrasonic'])
-
-
-@app.route('/consumer_test', methods=['POST'])
-def consumer_test():
-    try:
-        while True:
-            msg = consumer.poll(1.0)
-
-            if msg is None:
-                continue
-            if msg.error():
-                if msg.error().code() == KafkaError._PARTITION_EOF:
-                    continue
-                else:
-                    print(f'Error while consuming: {msg.error()}')
-            else:
-                # Parse the received message
-                value = msg.value().decode('utf-8')
-                print("Consumer value: " + value)
-
-    except KeyboardInterrupt:
-        pass
-    finally:
-        # Close the consumer gracefully
-        consumer.close()
+@app.route('/create_connexion', methods=['POST'])
+def create_connexion():
+    global connection_created
+    if not connection_created:
+        sercom = SerialComunication("/dev/ttyUSB0", 9600)
+        print("Creating threads for serial comunication")
+        logging.info("Creating threads for serial comunication")
+        read_data_thread = ThreadPoolExecutor(max_workers=1)
+        read_data_thread.submit(sercom.read_data())
+        connection_created = True
+        return "Connexion successful"
+    else:
+        return "Connexion already established"
 
 
 if __name__ == '__main__':

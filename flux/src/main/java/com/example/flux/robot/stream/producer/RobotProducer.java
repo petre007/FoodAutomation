@@ -27,7 +27,7 @@ public class RobotProducer {
     @Async
     @Scheduled(fixedRate = 500)
     public void produceUltrasonicData() {
-        String data = this.robotService.getDataFromUltrasonic(2).toString();
+        String data = this.robotService.getDataFromUltrasonic(1).toString();
         log.info(KafkaUtils.ULTRASONIC_DATA_PRODUCER+ " topic received data with the value: " + data);
         kafkaTemplate.send(KafkaUtils.ULTRASONIC_DATA_PRODUCER, data);
         kafkaTemplate.flush();

@@ -28,9 +28,6 @@ public class RobotService {
     @Transactional
     public void collectDataFromUltrasonic(Integer value, Integer id) {
         RobotEntity robotEntity = this.getRobotEntityById(id);
-        if (robotEntity.getUltrasonicData().size() == 5000) {
-            robotEntity.getUltrasonicData().remove(0);
-        }
 
         UltrasonicData ultrasonicData = UltrasonicData.builder()
                 .value(value)

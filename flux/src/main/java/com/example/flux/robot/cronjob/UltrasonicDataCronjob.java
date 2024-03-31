@@ -22,13 +22,13 @@ public class UltrasonicDataCronjob {
 
     @Async
     @Scheduled(fixedRate = 500)
-    public void deleteExcededValue() throws InterruptedException {
+    public void deleteExceededValue() {
         long totalRecords = this.ultrasonicRepository.count();
         if (totalRecords > MAX_LIMIT) {
             log.info("UltrasonicData records limit exceeded. Recalibration...");
             this.ultrasonicRepository.deleteOldestValue((int) (totalRecords - MAX_LIMIT));
         } else {
-            log.info("UltraSonicData records did not pass the limit.");
+            log.info("UltraSonicData records did not pass the limit: {}.", MAX_LIMIT);
         }
     }
 
