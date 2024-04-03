@@ -15,9 +15,17 @@ public class RobotConsumer {
     private final RobotService robotService;
 
     @KafkaListener(id = "ULTRASONIC", topics = KafkaUtils.ULTRASONIC_DATA_CONSUMER)
-    public void listen(String in) {
-        log.info(in + " was collected from " + KafkaUtils.ULTRASONIC_DATA_CONSUMER + " topic");
-        this.robotService.collectDataFromUltrasonic(Integer.parseInt(in), 1);
+    public void listenUltrasonic(String in) {
+        try {
+            log.info(in + " was collected from the " + KafkaUtils.ULTRASONIC_DATA_CONSUMER + " topic");
+            this.robotService.collectDataFromUltrasonic(Integer.parseInt(in), 1);
+        } catch (NumberFormatException e) {
+            log.error(in + "incorrect value for: " + KafkaUtils.ULTRASONIC_DATA_CONSUMER + " topic");
+        }
     }
 
+    @KafkaListener(id = "ESP32", topics = KafkaUtils.ESP32_DATA_CONSUMER)
+    public void listenESP32(String in) {
+        log.info(in + " was collected from the " + KafkaUtils.ESP32_DATA_CONSUMER + " topic");
+    }
 }

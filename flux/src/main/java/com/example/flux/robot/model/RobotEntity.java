@@ -51,5 +51,10 @@ public class RobotEntity {
     @OneToMany
     @JoinColumn(name = "robot_id")
     private Set<UltrasonicData> ultrasonicData = new HashSet<>();
+
+    @OneToMany
+    @JoinColumn(name = "robot_id")
+    private Set<ESP32Data> esp32Data = new HashSet<>();
+
     //add orders oneToMany relationship
 }

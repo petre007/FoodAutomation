@@ -1,7 +1,6 @@
 import serial
 import sys
-from confluent_kafka import Producer, Consumer, KafkaError
-from flask import jsonify
+from confluent_kafka import Producer, Consumer
 
 conf = {'bootstrap.servers': '192.168.1.128:9094',
         'broker.address.family': 'v4',
@@ -11,6 +10,7 @@ conf = {'bootstrap.servers': '192.168.1.128:9094',
 # Kafka producer
 producer = Producer(conf)
 consumer = Consumer(conf)
+
 
 class SerialComunication:
     def __init__(self, port, baudrate):
@@ -23,26 +23,34 @@ class SerialComunication:
             self.ser = serial.Serial(port=self.port, baudrate=self.baudrate, timeout=1)
         return self.ser
 
-    def read_data(self):
-        ser = self._configure_serial_communication()
-        try:
-            while True:
-                line = ser.readline().decode('utf-8').rstrip()
-                print("Data: " + line)
+    def read_data_from_arduino(self):
+        while True:
+            try:
+                self.ser = self._configure_serial_communication()
+                line = self.ser.readline().decode('utf-8').rstrip()
+                print(line)
                 if "ULTRASONIC" in line:
-                    print("Data from arduino: " + line)
                     producer.produce('data_from_ultrasonic',
                                      value=line.replace("ULTRASONIC", ""))
                     producer.flush()
-        except Exception as e:
-            return jsonify({'error': str(e)}), 500
+            finally:
+                self.ser.close()
 
+    def read_data_from_esp32(self):
+        while True:
+            try:
+                self.ser = self._configure_serial_communication()
+                image_data = self.ser.readline().decode('utf-8').rstrip()
+                producer.produce('data_from_esp32',
+                                 value=image_data)
+                producer.flush()
+            finally:
+                self.ser.close()
 
     def send_data(self, data):
         ser = self._configure_serial_communication()
         ser.write(data)
         ser.flush()
-
 
     # consumer.subscribe(['collected_data_from_ultrasonic'])
 

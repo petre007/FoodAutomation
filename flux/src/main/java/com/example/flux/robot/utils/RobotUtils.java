@@ -2,6 +2,8 @@ package com.example.flux.robot.utils;
 
 public class RobotUtils {
 
+    public final static long MAX_LIMIT = 1000;
+
     public final static String CONNEXION_SUCCESSFUL = "successful";
     public final static String CONNEXION_NOT_SUCCESSFUL = "not_successful";
     public final static String CREATE_CONNEXION_ENDPOINT = "create_connexion";
