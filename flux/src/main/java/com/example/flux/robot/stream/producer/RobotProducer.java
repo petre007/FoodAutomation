@@ -11,8 +11,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 @Slf4j
 @RequiredArgsConstructor
@@ -28,8 +26,17 @@ public class RobotProducer {
     @Scheduled(fixedRate = 500)
     public void produceUltrasonicData() {
         String data = this.robotService.getDataFromUltrasonic(1).toString();
-        log.info(KafkaUtils.ULTRASONIC_DATA_PRODUCER+ " topic received data with the value: " + data);
+        log.info(KafkaUtils.ULTRASONIC_DATA_PRODUCER + " topic produced data with the value: " + data);
         kafkaTemplate.send(KafkaUtils.ULTRASONIC_DATA_PRODUCER, data);
+        kafkaTemplate.flush();
+    }
+
+    @Async
+    @Scheduled(fixedRate = 500)
+    public void produceESP32Data() {
+        String data = this.robotService.getDataFromESP32(1).toString();
+        log.info(KafkaUtils.ESP32_DATA_PRODUCER + " topic produced data with the value: " + data);
+        kafkaTemplate.send(KafkaUtils.ESP32_DATA_PRODUCER, data);
         kafkaTemplate.flush();
     }
 

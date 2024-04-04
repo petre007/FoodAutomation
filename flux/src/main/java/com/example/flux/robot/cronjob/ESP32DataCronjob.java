@@ -1,7 +1,7 @@
 package com.example.flux.robot.cronjob;
 
 import com.example.flux.robot.repository.ESP32Repository;
-import com.example.flux.robot.utils.RobotUtils;
+import com.example.flux.utils.ConnexionUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -24,11 +24,11 @@ public class ESP32DataCronjob {
     @Scheduled(fixedRate = 500)
     public void deleteExceededValue() {
         long totalRecords = this.esp32Repository.count();
-        if (totalRecords > RobotUtils.MAX_LIMIT) {
+        if (totalRecords > ConnexionUtils.MAX_LIMIT) {
             log.info("ESP32Data records limit exceeded. Recalibration...");
-            this.esp32Repository.deleteOldestValue((int) (totalRecords - RobotUtils.MAX_LIMIT));
+            this.esp32Repository.deleteOldestValue((int) (totalRecords - ConnexionUtils.MAX_LIMIT));
         } else {
-            log.info("ESP32Data records did not pass the limit: {}.", RobotUtils.MAX_LIMIT);
+            log.info("ESP32Data records did not pass the limit: {}.", ConnexionUtils.MAX_LIMIT);
         }
     }
 

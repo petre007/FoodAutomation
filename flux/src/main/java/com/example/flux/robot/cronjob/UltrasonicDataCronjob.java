@@ -1,7 +1,7 @@
 package com.example.flux.robot.cronjob;
 
 import com.example.flux.robot.repository.UltrasonicRepository;
-import com.example.flux.robot.utils.RobotUtils;
+import com.example.flux.utils.ConnexionUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -23,11 +23,11 @@ public class UltrasonicDataCronjob {
     @Scheduled(fixedRate = 500)
     public void deleteExceededValue() {
         long totalRecords = this.ultrasonicRepository.count();
-        if (totalRecords > RobotUtils.MAX_LIMIT) {
+        if (totalRecords > ConnexionUtils.MAX_LIMIT) {
             log.info("UltrasonicData records limit exceeded. Recalibration...");
-            this.ultrasonicRepository.deleteOldestValue((int) (totalRecords - RobotUtils.MAX_LIMIT));
+            this.ultrasonicRepository.deleteOldestValue((int) (totalRecords - ConnexionUtils.MAX_LIMIT));
         } else {
-            log.info("UltraSonicData records did not pass the limit: {}.", RobotUtils.MAX_LIMIT);
+            log.info("UltraSonicData records did not pass the limit: {}.", ConnexionUtils.MAX_LIMIT);
         }
     }
 
