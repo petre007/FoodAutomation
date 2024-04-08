@@ -1,3 +1,9 @@
 flask~=3.0.2
 confluent_kafka==2.3.0
 tensorflow==2.16.1
+opencv-python==4.9.0.80
+imageio==2.34.0
+gymnasium==0.29.1
+keras~=3.1.1
+numpy~=1.26.4
+gym~=0.26.2

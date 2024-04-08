@@ -1,3 +1,5 @@
+import threading
+
 from confluent_kafka import Consumer, KafkaError
 
 conf = {'bootstrap.servers': 'localhost:9093',
@@ -7,11 +9,12 @@ conf = {'bootstrap.servers': 'localhost:9093',
 
 
 class DataCollector:
+    _instance = None
 
-    def __new__(cls):
-        if not hasattr(cls, 'instance'):
-            cls.instance = super(DataCollector, cls).__new__(cls)
-        return cls.instance
+    def __new__(class_, *args, **kwargs):
+        if not isinstance(class_._instance, class_):
+            class_._instance = object.__new__(class_)
+        return class_._instance
 
     def __init__(self):
         self.consumer = None
@@ -23,7 +26,7 @@ class DataCollector:
             self.consumer = Consumer(conf)
         return self.consumer
 
-    def get_data(self):
+    def _get_data(self):
         self.consumer = self._create_consumer()
         self.consumer.subscribe(['collected_data_from_ultrasonic', 'collected_data_from_esp32'])
         try:
@@ -42,9 +45,9 @@ class DataCollector:
                     val = msg.value().decode('utf-8')
                     topic = msg.topic()
                     if topic is 'collected_data_from_ultrasonic':
-                        self.ultrasonic_data = val
+                        self.ultrasonic_data = list(val)
                     if topic is 'collected_data_from_esp32':
-                        self.esp32_data = val
+                        self.esp32_data = list(val)
                     print(f'Received: {val} from topic {topic}    ')
                     self.consumer.commit(msg)
 
@@ -53,3 +56,9 @@ class DataCollector:
         finally:
             # Close the consumer gracefully
             self.consumer.close()
+
+    def start_data_collection(self):
+        print("Starting thread for data collecting")
+        data_collection_thread = threading.Thread(target=self._get_data)
+        data_collection_thread.daemon = True
+        data_collection_thread.start()
