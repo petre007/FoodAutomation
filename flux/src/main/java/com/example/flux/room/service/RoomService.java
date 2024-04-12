@@ -24,7 +24,7 @@ public class RoomService {
 
     @Transactional
     public List<RoomEntity> getAllRooms(String token) throws NoGrantedAuthorityException {
-        this.jwtService.checkRoleAdmin(token);
+        this.jwtService.checkRole(token, Roles.ROLE_ADMIN);
         return this.roomRepository.findAll();
     }
 
@@ -41,7 +41,7 @@ public class RoomService {
     @Transactional
     public void assignRoomToUser(String token, String user, RoomEntity roomEntity) throws NoGrantedAuthorityException {
 
-       this.jwtService.checkRoleAdmin(token);
+       this.jwtService.checkRole(token, Roles.ROLE_ADMIN);
 
         UserModel userToAssign = this.userRepository.findUserModelByUsername(user)
                 .orElseThrow();

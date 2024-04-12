@@ -1,6 +1,5 @@
 package com.example.flux.delivery.states;
 
-import com.example.flux.delivery.model.OrderEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,9 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
-public class DeliveryDeliveringState implements DeliveryState {
-
-    private OrderEntity orderEntity;
+public class DeliveryDeliveringState extends DeliveryStateAbstract implements DeliveryState {
 
     @Override
     public void updateDeliveryStatus() {

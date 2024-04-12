@@ -4,6 +4,7 @@ import com.example.flux.food.model.FoodModel;
 import com.example.flux.food.repository.FoodRepository;
 import com.example.flux.security.config.JwtService;
 import com.example.flux.security.exception.NoGrantedAuthorityException;
+import com.example.flux.user.model.Roles;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,13 +30,13 @@ public class FoodService {
 
     @Transactional
     public void addFood(String token, FoodModel foodModel) throws NoGrantedAuthorityException {
-        this.jwtService.checkRoleAdmin(token);
+        this.jwtService.checkRole(token, Roles.ROLE_ADMIN);
         this.foodRepository.save(foodModel);
     }
 
     @Transactional
     public void deleteFood(String token, FoodModel foodModel) throws NoGrantedAuthorityException {
-        this.jwtService.checkRoleAdmin(token);
+        this.jwtService.checkRole(token, Roles.ROLE_ADMIN);
         this.foodRepository.delete(foodModel);
     }
 

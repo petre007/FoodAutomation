@@ -79,15 +79,16 @@ public class JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    public void checkRoleAdmin(String token) throws NoGrantedAuthorityException {
+    public void checkRole(String token, Roles roles) throws NoGrantedAuthorityException {
 
         String username = this.extractUsername(token);
 
         UserModel userToCheck = this.userRepository.findUserModelByUsername(username)
                 .orElseThrow();
 
-        if (!userToCheck.getRole().equals(Roles.ROLE_ADMIN)) {
-            throw new NoGrantedAuthorityException("No granted authority for this operation");
+        if (!userToCheck.getRole().equals(roles)) {
+            throw new NoGrantedAuthorityException("No granted authority for this " +
+                    "operation for user with role: " + roles);
         }
     }
 

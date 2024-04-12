@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class DeliveryContext implements DeliveryState {
+public class DeliveryContext extends DeliveryStateAbstract implements DeliveryState {
 
     private DeliveryState currentState;
 
