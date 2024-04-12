@@ -29,4 +29,9 @@ public class RobotConsumer {
         log.info(in + " was collected from the " + KafkaUtils.ESP32_DATA_CONSUMER + " topic");
         this.robotService.collectDataFromESP32(in, 1);
     }
+
+    @KafkaListener(id = KafkaUtils.GROUP_ID_OUTPUT, topics = KafkaUtils.OUTPUT_DATA_CONSUMER)
+    public void listenOutput(String in) {
+        log.info(in + " was collected from the " + KafkaUtils.OUTPUT_DATA_CONSUMER + " topic");
+    }
 }

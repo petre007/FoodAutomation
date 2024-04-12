@@ -32,4 +32,14 @@ public class RobotTopics {
                 .replicas(1)
                 .build();
     }
+
+    @Bean
+    public NewTopic topic4() {
+        return TopicBuilder.name(KafkaUtils.ESP32_DATA_PRODUCER)
+                .partitions(10)
+                .replicas(1)
+                .build();
+    }
+
+
 }
