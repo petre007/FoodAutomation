@@ -88,7 +88,7 @@ public class JwtService {
 
         if (!userToCheck.getRole().equals(roles)) {
             throw new NoGrantedAuthorityException("No granted authority for this " +
-                    "operation for user with role: " + roles);
+                    "operation for user with role: " + userToCheck.getRole());
         }
     }
 

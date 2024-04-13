@@ -5,6 +5,7 @@ import com.example.flux.security.exception.NoGrantedAuthorityException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -14,7 +15,7 @@ public class DeliveryController {
     private final DeliveryService deliveryService;
 
     @PostMapping("/delivery")
-    public ResponseEntity<String> updateDeliveryState(UpdateDeliveryStateRequestBody requestBody)
+    public ResponseEntity<String> updateDeliveryState(@RequestBody UpdateDeliveryStateRequestBody requestBody)
             throws NoGrantedAuthorityException {
         this.deliveryService.deliveryFlow(requestBody.getOrderEntity(),
                 requestBody.getStates(),
