@@ -4,6 +4,6 @@ public class DeliveryInProgressState extends DeliveryStateAbstract implements De
 
     @Override
     public void updateDeliveryStatus() {
-        System.out.println("Implement latter");
+        System.out.println(this.getOrderRepository().existsById(0));
     }
 }

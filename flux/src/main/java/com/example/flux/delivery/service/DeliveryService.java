@@ -28,7 +28,7 @@ public class DeliveryService {
             throws NoGrantedAuthorityException {
         DeliveryContext context = new DeliveryContext();
         context.setOrderEntity(orderEntity);
-
+        context.setOrderRepository(orderRepository);
         switch (states) {
             case PENDING -> {
                 this.jwtService.checkRole(token, Roles.ROLE_CLIENT);

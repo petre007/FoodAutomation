@@ -11,6 +11,7 @@ public class DeliveryContext extends DeliveryStateAbstract implements DeliverySt
 
     @Override
     public void updateDeliveryStatus() {
+        this.currentState.setOrderRepository(this.getOrderRepository());
         this.currentState.updateDeliveryStatus();
     }
 }
