@@ -2,6 +2,7 @@ package com.example.flux.delivery.service;
 
 import com.example.flux.delivery.model.OrderEntity;
 import com.example.flux.delivery.model.States;
+import com.example.flux.delivery.repository.OrderRepository;
 import com.example.flux.delivery.states.DeliveryContext;
 import com.example.flux.delivery.states.DeliveryDeliveringState;
 import com.example.flux.delivery.states.DeliveryInProgressState;
@@ -20,11 +21,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class DeliveryService {
 
     private final JwtService jwtService;
+    private final OrderRepository orderRepository;
 
     @Transactional
     public void deliveryFlow(OrderEntity orderEntity, States states, String token)
             throws NoGrantedAuthorityException {
         DeliveryContext context = new DeliveryContext();
+        context.setOrderEntity(orderEntity);
 
         switch (states) {
             case PENDING -> {
@@ -41,7 +44,7 @@ public class DeliveryService {
             }
             default -> log.info(states + " is not a valid state");
         }
-        context.setOrderEntity(orderEntity);
+
         context.updateDeliveryStatus();
     }
 
