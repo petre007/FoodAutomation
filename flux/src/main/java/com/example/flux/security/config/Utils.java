@@ -8,7 +8,8 @@ public class Utils {
             "/api/auth/register",
             "/room/get_all_rooms/**",
             "/robot",
-            "/delivery"
+            "/delivery/**",
+            "/food/**"
     };
 
 

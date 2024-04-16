@@ -18,12 +18,10 @@ public class FoodService {
     private final FoodRepository foodRepository;
     private final JwtService jwtService;
 
-    @Transactional
     public List<FoodModel> getAllFoods() {
         return this.foodRepository.findAll();
     }
 
-    @Transactional
     public FoodModel getFoodById(Integer id) {
         return this.foodRepository.getReferenceById(id);
     }
