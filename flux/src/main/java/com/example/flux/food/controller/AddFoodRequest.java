@@ -8,8 +8,6 @@ import lombok.Setter;
 @Getter
 public class AddFoodRequest {
 
-    private String token;
-
     private FoodModel foodModel;
 
 }

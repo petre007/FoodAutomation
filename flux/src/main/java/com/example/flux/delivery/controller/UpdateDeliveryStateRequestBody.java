@@ -9,7 +9,6 @@ import lombok.Setter;
 @Getter
 public class UpdateDeliveryStateRequestBody {
 
-    private String token;
     private OrderEntity orderEntity;
     private States states;
 

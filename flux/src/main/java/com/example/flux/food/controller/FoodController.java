@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,9 +27,10 @@ public class FoodController {
     }
 
     @PostMapping("/add_food")
-    public ResponseEntity<String> addFood(@RequestBody AddFoodRequest addFoodRequest)
+    public ResponseEntity<String> addFood(@RequestHeader String token,
+            @RequestBody AddFoodRequest addFoodRequest)
             throws NoGrantedAuthorityException {
-        this.foodService.addFood(addFoodRequest.getToken(), addFoodRequest.getFoodModel());
+        this.foodService.addFood(token, addFoodRequest.getFoodModel());
         return ResponseEntity.ok("Added food");
     }
 

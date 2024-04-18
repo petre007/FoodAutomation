@@ -6,20 +6,24 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/delivery")
 public class DeliveryController {
 
     private final DeliveryService deliveryService;
 
-    @PostMapping("/delivery")
-    public ResponseEntity<String> updateDeliveryState(@RequestBody UpdateDeliveryStateRequestBody requestBody)
+    @PostMapping("/update_state")
+    public ResponseEntity<String> updateDeliveryState(@RequestHeader String token,
+            @RequestBody UpdateDeliveryStateRequestBody requestBody)
             throws NoGrantedAuthorityException {
         this.deliveryService.deliveryFlow(requestBody.getOrderEntity(),
                 requestBody.getStates(),
-                requestBody.getToken());
+                token);
         return ResponseEntity.ok("Delivery state updated");
     }
 
