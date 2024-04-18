@@ -18,7 +18,9 @@ public class FoodService {
     private final FoodRepository foodRepository;
     private final JwtService jwtService;
 
-    public List<FoodModel> getAllFoods() {
+    public List<FoodModel> getAllFoods(String token)
+            throws NoGrantedAuthorityException {
+        this.jwtService.checkRole(token, Roles.ROLE_CLIENT);
         return this.foodRepository.findAll();
     }
 

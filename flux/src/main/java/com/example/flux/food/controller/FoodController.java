@@ -22,8 +22,9 @@ public class FoodController {
     private final FoodService foodService;
 
     @GetMapping("/get_all_foods")
-    public ResponseEntity<List<FoodModel>> getAllFoods() {
-        return ResponseEntity.ok(foodService.getAllFoods());
+    public ResponseEntity<List<FoodModel>> getAllFoods(@RequestHeader String token)
+            throws NoGrantedAuthorityException {
+        return ResponseEntity.ok(foodService.getAllFoods(token));
     }
 
     @PostMapping("/add_food")
