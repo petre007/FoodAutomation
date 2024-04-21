@@ -8,6 +8,7 @@ public class DeliveryPendingState extends DeliveryStateAbstract implements Deliv
     @Override
     public void updateDeliveryStatus() {
         OrderEntity orderEntity = this.getOrderEntity();
+        orderEntity.setRoomEntity(this.getRoomEntity());
         orderEntity.setStates(States.PENDING);
         this.getOrderRepository().save(orderEntity);
     }

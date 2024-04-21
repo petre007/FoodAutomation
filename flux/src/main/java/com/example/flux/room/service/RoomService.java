@@ -52,6 +52,16 @@ public class RoomService {
     }
 
     @Transactional
+    public void assignRoomToUserWithoutToken(String user, RoomEntity roomEntity) {
+        UserModel userToAssign = this.userRepository.findUserModelByUsername(user)
+                .orElseThrow();
+
+        userToAssign.setRoomEntity(roomEntity);
+
+        this.userRepository.save(userToAssign);
+    }
+
+    @Transactional
     public void createEmptyRoom(String roomName) {
         this.roomRepository.save(RoomEntity.builder()
                 .roomName(roomName)
