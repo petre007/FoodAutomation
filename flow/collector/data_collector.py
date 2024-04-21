@@ -52,11 +52,11 @@ class DataCollector:
                     # Parse the received message
                     val = msg.value().decode('utf-8')
                     topic = msg.topic()
-                    if topic is 'collected_data_from_ultrasonic':
+                    if topic == 'collected_data_from_ultrasonic':
                         self.ultrasonic_data = list(val)
-                    if topic is 'collected_data_from_esp32':
+                    if topic == 'collected_data_from_esp32':
                         self.esp32_data = list(val)
-                    if topic is 'orders_delivering':
+                    if topic == 'orders_delivering':
                         self.orders_data.append(val)
                     print(f'Received: {val} from topic {topic}    ')
                     self.consumer.commit(msg)
