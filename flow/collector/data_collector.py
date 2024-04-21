@@ -22,6 +22,7 @@ class DataCollector:
         self.producer = None
         self.ultrasonic_data = []
         self.esp32_data = []
+        self.orders_data = []
 
     def _create_consumer(self):
         if self.consumer is None:
@@ -55,6 +56,8 @@ class DataCollector:
                         self.ultrasonic_data = list(val)
                     if topic is 'collected_data_from_esp32':
                         self.esp32_data = list(val)
+                    if topic is 'orders_delivering':
+                        self.orders_data.append(val)
                     print(f'Received: {val} from topic {topic}    ')
                     self.consumer.commit(msg)
 
