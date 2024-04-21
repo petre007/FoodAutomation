@@ -15,5 +15,6 @@ public class KafkaUtils {
     // Topics where flux produces data
     public static final String ULTRASONIC_DATA_PRODUCER = "collected_data_from_ultrasonic";
     public static final String ESP32_DATA_PRODUCER = "collected_data_from_esp32";
+    public static final String ORDERS_DELIVERING = "orders_delivering";
 
 }

@@ -2,7 +2,8 @@ package com.example.flux.delivery.model;
 
 import com.example.flux.food.model.FoodModel;
 import com.example.flux.room.model.RoomEntity;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -55,4 +56,13 @@ public class OrderEntity {
     @Enumerated(EnumType.STRING)
     private States states;
 
+    public String toString() {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return "{}"; // Return an empty JSON object if serialization fails
+        }
+    }
 }

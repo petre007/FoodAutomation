@@ -16,6 +16,7 @@ import com.example.flux.user.model.Roles;
 import com.example.flux.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +33,7 @@ public class DeliveryService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final FoodRepository foodRepository;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
 
     @Transactional
@@ -64,7 +66,7 @@ public class DeliveryService {
             }
             case DELIVERING -> {
                 this.jwtService.checkRole(token, Roles.ROLE_EMPLOYEE);
-                context.setCurrentState(new DeliveryDeliveringState());
+                context.setCurrentState(new DeliveryDeliveringState(kafkaTemplate));
             }
             default -> log.info(states + " is not a valid state");
         }

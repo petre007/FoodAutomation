@@ -3,6 +3,7 @@ import random
 from keras.src.layers import Dense, Conv2D, Flatten, concatenate
 from collections import deque
 from brain.environment import RobotEnv
+from collector.data_collector import DataCollector
 
 os.environ["KERAS_BACKEND"] = "tensorflow"
 
@@ -51,6 +52,9 @@ def combine_models(obstacle_avoidance_model, image_model):
 
 
 def train_model(model):
+    # Create an DataCollector instance
+    data_collecor = DataCollector()
+
     # Create an instance of the environment
     env = RobotEnv()
 
@@ -81,6 +85,7 @@ def train_model(model):
                 action = np.argmax(action_probabilities)
 
             # Take action in the environment
+            data_collecor.send_command(action)
             next_obs, reward = env.step(action)
             next_obs = np.reshape(next_obs, [1, -1])
 

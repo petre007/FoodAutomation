@@ -1,12 +1,13 @@
 import threading
 
-from confluent_kafka import Consumer, KafkaError
+from confluent_kafka import Producer, Consumer, KafkaError
 
 conf = {'bootstrap.servers': 'localhost:9093',
         'broker.address.family': 'v4',
         "default.topic.config": {"auto.offset.reset": "earliest"},
         'group.id': 'ULTRASONIC'}
 
+topics_list = ['collected_data_from_ultrasonic', 'collected_data_from_esp32', 'orders_delivering']
 
 class DataCollector:
     _instance = None
@@ -18,6 +19,7 @@ class DataCollector:
 
     def __init__(self):
         self.consumer = None
+        self.producer = None
         self.ultrasonic_data = []
         self.esp32_data = []
 
@@ -26,9 +28,14 @@ class DataCollector:
             self.consumer = Consumer(conf)
         return self.consumer
 
+    def _create_producer(self):
+        if self.producer is None:
+            self.producer = Producer(conf)
+        return self.producer
+
     def _get_data(self):
         self.consumer = self._create_consumer()
-        self.consumer.subscribe(['collected_data_from_ultrasonic', 'collected_data_from_esp32'])
+        self.consumer.subscribe(topics_list)
         try:
             while True:
                 msg = self.consumer.poll(1.0)
@@ -62,3 +69,10 @@ class DataCollector:
         data_collection_thread = threading.Thread(target=self._get_data)
         data_collection_thread.daemon = True
         data_collection_thread.start()
+
+    def send_command(self, command):
+        self.producer = self._create_producer()
+        self.producer.produce("data_from_trained_model", value=command)
+        self.producer.flush()
+
+
