@@ -9,13 +9,17 @@ conf = {'bootstrap.servers': 'localhost:9093',
 
 topics_list = ['collected_data_from_ultrasonic', 'collected_data_from_esp32', 'orders_delivering']
 
+
 class DataCollector:
     _instance = None
+    _lock = threading.Lock()
 
-    def __new__(class_, *args, **kwargs):
-        if not isinstance(class_._instance, class_):
-            class_._instance = object.__new__(class_)
-        return class_._instance
+    def __new__(cls):
+        if cls._instance is None:
+            with cls._lock:
+                if not cls._instance:
+                    cls._instance = super().__new__(cls)
+        return cls._instance
 
     def __init__(self):
         self.consumer = None
@@ -77,5 +81,3 @@ class DataCollector:
         self.producer = self._create_producer()
         self.producer.produce("data_from_trained_model", value=command)
         self.producer.flush()
-
-
