@@ -7,6 +7,7 @@ import com.example.flux.delivery.states.DeliveryContext;
 import com.example.flux.delivery.states.DeliveryDeliveringState;
 import com.example.flux.delivery.states.DeliveryInProgressState;
 import com.example.flux.delivery.states.DeliveryPendingState;
+import com.example.flux.delivery.states.DeliveryStateException;
 import com.example.flux.food.model.FoodModel;
 import com.example.flux.food.repository.FoodRepository;
 import com.example.flux.security.config.JwtService;
@@ -35,7 +36,7 @@ public class DeliveryService {
 
     @Transactional
     public void deliveryFlow(OrderEntity orderEntity, States states, String token)
-            throws NoGrantedAuthorityException {
+            throws NoGrantedAuthorityException, DeliveryStateException {
         DeliveryContext context = new DeliveryContext();
 
         Set<FoodModel> foodModels = orderEntity.getFoodModelSet().stream()

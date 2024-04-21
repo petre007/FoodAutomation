@@ -2,6 +2,7 @@ package com.example.flux.delivery.controller;
 
 import com.example.flux.delivery.model.OrderEntity;
 import com.example.flux.delivery.service.DeliveryService;
+import com.example.flux.delivery.states.DeliveryStateException;
 import com.example.flux.security.exception.NoGrantedAuthorityException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class DeliveryController {
     @PostMapping("/update_state")
     public ResponseEntity<String> updateDeliveryState(@RequestHeader String token,
                                                       @RequestBody UpdateDeliveryStateRequestBody requestBody)
-            throws NoGrantedAuthorityException {
+            throws NoGrantedAuthorityException, DeliveryStateException {
         this.deliveryService.deliveryFlow(requestBody.getOrderEntity(),
                 requestBody.getStates(),
                 token);

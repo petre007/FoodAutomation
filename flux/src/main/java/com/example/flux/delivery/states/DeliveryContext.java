@@ -10,7 +10,8 @@ public class DeliveryContext extends DeliveryStateAbstract implements DeliverySt
     private DeliveryState currentState;
 
     @Override
-    public void updateDeliveryStatus() {
+    public void updateDeliveryStatus()
+            throws DeliveryStateException {
         this.currentState.setRoomEntity(this.getRoomEntity());
         this.currentState.setOrderRepository(this.getOrderRepository());
         this.currentState.setOrderEntity(this.getOrderEntity());
