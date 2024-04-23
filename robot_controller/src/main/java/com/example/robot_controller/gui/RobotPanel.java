@@ -6,7 +6,6 @@ import com.example.robot_controller.commands.RobotMoveForward;
 import com.example.robot_controller.commands.RobotMoveLeft;
 import com.example.robot_controller.commands.RobotMoveRight;
 import com.example.robot_controller.commands.RobotMoveStop;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import javax.swing.*;
@@ -24,14 +23,14 @@ public class RobotPanel extends JFrame {
     private JButton backwardButton;
     private JButton rightButton;
     private JButton stopButton;
-
-    @Autowired
+    
     public RobotPanel(KafkaTemplate<String, String> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
         super.setTitle("Food Automation");
         super.setVisible(true);
         super.setSize(new Dimension(768, 480));
         super.setResizable(false);
+        super.setDefaultCloseOperation(EXIT_ON_CLOSE);
         super.add(panel1);
 
         leftButton.addActionListener(new ActionListener() {
