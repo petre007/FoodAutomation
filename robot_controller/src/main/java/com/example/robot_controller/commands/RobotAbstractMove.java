@@ -1,16 +1,13 @@
 package com.example.robot_controller.commands;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public abstract class RobotAbstractMove {
 
-    private KafkaTemplate<String, String> kafkaTemplate;
+    protected final KafkaTemplate<String, String> kafkaTemplate;
 
-    @Autowired
-    public final void setKafkaTemplate(KafkaTemplate<String, String> kafkaTemplate) {
-        this.kafkaTemplate = kafkaTemplate;
-    }
 }
