@@ -56,5 +56,8 @@ public class RobotEntity {
     @JoinColumn(name = "robot_id")
     private Set<ESP32Data> esp32Data = new HashSet<>();
 
+    @OneToMany
+    @JoinColumn(name = "robot_id")
+    private Set<OutputData> outputData = new HashSet<>();
     //add orders oneToMany relationship
 }

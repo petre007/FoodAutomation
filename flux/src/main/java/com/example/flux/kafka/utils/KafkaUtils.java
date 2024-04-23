@@ -10,7 +10,7 @@ public class KafkaUtils {
     // Topics where flux consumes data
     public static final String ULTRASONIC_DATA_CONSUMER = "data_from_ultrasonic";
     public static final String ESP32_DATA_CONSUMER = "data_from_esp32";
-    public static final String OUTPUT_DATA_CONSUMER = "data_from_trained_model";
+    public static final String OUTPUT_DATA_CONSUMER = "output_data";
 
     // Topics where flux produces data
     public static final String ULTRASONIC_DATA_PRODUCER = "collected_data_from_ultrasonic";
