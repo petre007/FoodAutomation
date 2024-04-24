@@ -23,7 +23,9 @@ public class RobotPanel extends JFrame {
     private JButton backwardButton;
     private JButton rightButton;
     private JButton stopButton;
-    
+
+    private JTextPane ultrasonicField;
+
     public RobotPanel(KafkaTemplate<String, String> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
         super.setTitle("Food Automation");
@@ -63,11 +65,11 @@ public class RobotPanel extends JFrame {
                 RobotMakeMove.makeMove(new RobotMoveBackward(kafkaTemplate));
             }
         });
-
-
     }
 
-    private void createUIComponents() {
 
+    public void setUltrasonicFieldText(String text) {
+        ultrasonicField.setText("Ultrasonic value: " + text + "cm");
     }
+
 }
