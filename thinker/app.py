@@ -1,6 +1,6 @@
 from flask import Flask
 from concurrent.futures import ThreadPoolExecutor
-from connector.serial_comunication import SerialComunication
+from connector.serial_comunication import send_data, read_data_from_arduino, read_data_from_esp32
 
 app = Flask(__name__)
 
@@ -12,11 +12,11 @@ def create_connexion():
     global connection_created
     if not connection_created:
         connection_created = True
-        sercom = SerialComunication("/dev/ttyUSB0", 115200)
-        # sercom = SerialComunication("/dev/ttyUSB0", 9600)
         print("Creating threads for serial comunication")
-        read_data_thread = ThreadPoolExecutor(max_workers=1)
-        read_data_thread.submit(sercom.read_data_from_esp32())
+        threads = ThreadPoolExecutor(max_workers=3)
+        threads.submit(send_data)
+        threads.submit(read_data_from_arduino)
+        threads.submit(read_data_from_esp32)
         return "Connexion successful"
 
     else:
