@@ -8,6 +8,8 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -26,6 +28,12 @@ public class RobotPanelBean {
     public void ultrasonicConsumer(String in) {
         log.info("Value from ultrasonic: " + in);
         this.robotPanel.setUltrasonicFieldText(in);
+    }
+
+    @KafkaListener(id = KafkaUtils.GROUP_ID_ESP32, topics = KafkaUtils.ESP32_DATA_CONSUMER)
+    public void esp32Consumer(String in) throws IOException {
+        log.info("Value from esp32: " + in);
+        this.robotPanel.setImage(in);
     }
 
 }
