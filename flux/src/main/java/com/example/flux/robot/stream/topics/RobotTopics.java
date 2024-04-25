@@ -13,7 +13,7 @@ public class RobotTopics {
     public NewTopic topic() {
         return TopicBuilder.name(KafkaUtils.ULTRASONIC_DATA_CONSUMER)
                 .partitions(10)
-                .replicas(1)
+                .replicas(2)
                 .build();
     }
 
@@ -29,7 +29,7 @@ public class RobotTopics {
     public NewTopic topic3() {
         return TopicBuilder.name(KafkaUtils.ESP32_DATA_CONSUMER)
                 .partitions(10)
-                .replicas(1)
+                .replicas(2)
                 .build();
     }
 

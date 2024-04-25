@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -47,7 +48,7 @@ public class RobotService {
         RobotEntity robotEntity = this.getRobotEntityById(id);
 
         ESP32Data esp32Data = ESP32Data.builder()
-                .imageBase64(value)
+                .imageBase64(value.getBytes(StandardCharsets.UTF_8))
                 .robotEntity(robotEntity)
                 .build();
 
@@ -67,7 +68,7 @@ public class RobotService {
     }
 
     @Transactional
-    public List<String> getDataFromESP32(Integer id) {
+    public List<byte[]> getDataFromESP32(Integer id) {
         return new ArrayList<>(this.robotsRepository.getReferenceById(id)
                 .getEsp32Data())
                 .stream()
