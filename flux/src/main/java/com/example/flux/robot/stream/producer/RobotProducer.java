@@ -11,6 +11,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @Slf4j
 @RequiredArgsConstructor
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Component;
 public class RobotProducer {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, List<byte[]>> kafkaTemplateByte;
 
     private final RobotService robotService;
 
@@ -26,7 +29,7 @@ public class RobotProducer {
     @Scheduled(fixedRate = 500)
     public void produceUltrasonicData() {
         String data = this.robotService.getDataFromUltrasonic(1).toString();
-        log.info(KafkaUtils.ULTRASONIC_DATA_PRODUCER + " topic produced data with the value: " + data);
+        log.info(KafkaUtils.ULTRASONIC_DATA_PRODUCER + " topic produced data");
         kafkaTemplate.send(KafkaUtils.ULTRASONIC_DATA_PRODUCER, data);
         kafkaTemplate.flush();
     }
@@ -34,10 +37,10 @@ public class RobotProducer {
     @Async
     @Scheduled(fixedRate = 500)
     public void produceESP32Data() {
-        String data = this.robotService.getDataFromESP32(1).toString();
-        log.info(KafkaUtils.ESP32_DATA_PRODUCER + " topic produced data with the value: " + data);
-        kafkaTemplate.send(KafkaUtils.ESP32_DATA_PRODUCER, data);
-        kafkaTemplate.flush();
+        List<byte[]> data = this.robotService.getDataFromESP32(1);
+        log.info(KafkaUtils.ESP32_DATA_PRODUCER + " topic produced data");
+        kafkaTemplateByte.send(KafkaUtils.ESP32_DATA_PRODUCER, data.subList(0, 100));
+        kafkaTemplateByte.flush();
     }
 
 }

@@ -1,3 +1,4 @@
+import base64
 import threading
 
 from confluent_kafka import Producer, Consumer, KafkaError
@@ -9,6 +10,15 @@ conf = {'bootstrap.servers': 'localhost:9093',
 
 topics_list = ['collected_data_from_ultrasonic', 'collected_data_from_esp32', 'orders_delivering']
 
+def deserialize_byte_array(byte_array_str):
+    try:
+        return bytearray(base64.b64decode(byte_array_str))
+    except:
+        return []
+
+def deserialize_list_of_byte_arrays(data):
+    byte_arrays = data.split(';')
+    return [deserialize_byte_array(byte_array_str) for byte_array_str in byte_arrays]
 
 class DataCollector:
     _instance = None
@@ -57,9 +67,9 @@ class DataCollector:
                     val = msg.value().decode('utf-8')
                     topic = msg.topic()
                     if topic == 'collected_data_from_ultrasonic':
-                        self.ultrasonic_data = list(val)
+                        self.ultrasonic_data = val
                     if topic == 'collected_data_from_esp32':
-                        self.esp32_data = list(val)
+                        self.esp32_data = deserialize_list_of_byte_arrays(val)
                     if topic == 'orders_delivering':
                         self.orders_data.append(val)
                     print(f'Received: {val} from topic {topic}    ')

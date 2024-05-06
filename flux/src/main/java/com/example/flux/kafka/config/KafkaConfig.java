@@ -11,6 +11,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -35,12 +36,56 @@ public class KafkaConfig {
         configProps.put(
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
                 StringSerializer.class);
+        configProps.put(
+                ProducerConfig.BUFFER_MEMORY_CONFIG,
+                104857600
+        );
+        configProps.put(
+                ProducerConfig.MAX_REQUEST_SIZE_CONFIG,
+                104857600
+        );
+        configProps.put(
+                "message.max.bytes",
+                104857600
+        );
+        return new DefaultKafkaProducerFactory<>(configProps);
+    }
+
+    @Bean
+    public ProducerFactory<String, List<byte[]>> producerFactoryByte() {
+        Map<String, Object> configProps = new HashMap<>();
+        configProps.put(
+                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
+                "localhost:9093");
+        configProps.put(
+                ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
+                StringSerializer.class);
+        configProps.put(
+                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+                ListOfByteArraySerializer.class);
+        configProps.put(
+                ProducerConfig.BUFFER_MEMORY_CONFIG,
+                104857600
+        );
+        configProps.put(
+                ProducerConfig.MAX_REQUEST_SIZE_CONFIG,
+                104857600
+        );
+        configProps.put(
+                "message.max.bytes",
+                104857600
+        );
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
     @Bean
     public KafkaTemplate<String, String> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
+    }
+
+    @Bean
+    public KafkaTemplate<String, List<byte[]>> kafkaTemplateByte() {
+        return new KafkaTemplate<>(producerFactoryByte());
     }
 
 
