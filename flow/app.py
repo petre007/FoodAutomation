@@ -13,7 +13,7 @@ def create_connexion():  # put application's code here
     global connection_created, data_collector
     if not connection_created:
         connection_created = True
-        data_collector.start_data_collection()
+        data_collector.get_data()
         return "Connection established"
     else:
         return "Connection already established"

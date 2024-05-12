@@ -35,7 +35,7 @@ public class ESP32Data {
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "image", columnDefinition = "LONGBLOB")
-    private byte[] imageBase64;
+    private String imageBase64;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "robot_id")

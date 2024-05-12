@@ -1,121 +1,75 @@
 import os
-import random
-from keras.src.layers import Dense, Conv2D, Flatten, concatenate
-from collections import deque
+
 from brain.environment import RobotEnv
 from collector.data_collector import DataCollector
 
 os.environ["KERAS_BACKEND"] = "tensorflow"
 
-from keras import Sequential, Model
 import numpy as np
 
 
-def create_obstacle_avoidance_model(input_shape):
-    model = Sequential([
-        Dense(64, input_shape=input_shape, activation='relu'),
-        Dense(32, activation='relu'),
-        Dense(1, activation='sigmoid')  # Output layer with a single unit and sigmoid activation
-    ])
-    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-    return model
-
-
-def create_image_model(input_shape):
-    model = Sequential([
-        Conv2D(32, (3, 3), activation='relu', input_shape=input_shape),
-        Conv2D(64, (3, 3), activation='relu'),
-        Flatten(),
-        Dense(128, activation='relu'),
-        Dense(4, activation='softmax')
-    ])
-    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-    return model
-
-
-def combine_models(obstacle_avoidance_model, image_model):
-    # Create obstacle avoidance model for sensor data
-    sensor_model = create_obstacle_avoidance_model(obstacle_avoidance_model)
-
-    # Create image model for image data
-    image_model = create_image_model(image_model)
-
-    # Combine both models
-    combined_input = concatenate([sensor_model.output, image_model.output])
-    combined_output = Dense(4, activation='softmax')(combined_input)  # Output layer for Left, Right, Forward, Back
-    combined_model = Model(inputs=[sensor_model.input, image_model.input], outputs=combined_output)
-
-    # Compile the combined model
-    combined_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-
-    return combined_model
-
-
-def train_model(model):
-    # Create an DataCollector instance
-    data_collecor = DataCollector()
-
-    # Create an instance of the environment
+def rl_model_train():
+    # Instantiate environment and agent
     env = RobotEnv()
+    state_size = env.observation_space.n
+    action_size = env.action_space.n
+    Q_table = np.zeros((state_size, action_size))
+    # number of episode we will run
+    n_episodes = 1000  # collect 1000 elements for each input (ultrasonic and esp32)
 
-    # Define training parameters
-    num_episodes = 1000
-    max_steps_per_episode = 100
-    epsilon = 1.0  # Exploration rate
-    epsilon_min = 0.01
-    epsilon_decay = 0.995
-    batch_size = 32
-    memory = deque(maxlen=2000)  # Replay memory
+    # maximum of iteration per episode
+    max_iter_episode = 100
 
-    for episode in range(num_episodes):
-        obs = env.reset()  # Reset the environment at the beginning of each episode
-        obs = np.reshape(obs, [1, -1])
-        total_reward = 0
+    # initialize the exploration probability to 1
+    exploration_proba = 1
 
-        actions_taken = []  # List to store actions taken in each episode
+    # exploartion decreasing decay for exponential decreasing
+    exploration_decreasing_decay = 0.001
 
-        for step in range(max_steps_per_episode):
-            # Choose action using epsilon-greedy policy
-            if np.random.rand() <= epsilon:
-                action = env.action_space.sample()  # Explore
+    # minimum of exploration proba
+    min_exploration_proba = 0.01
+
+    # discounted factor
+    gamma = 0.99
+
+    # learning rate
+    lr = 0.1
+
+    # we iterate over episodes
+    for e in range(n_episodes):
+
+        # we initialize the first state of the episode
+        current_state = env.reset()
+
+        # sum the rewards that the agent gets from the environment
+        total_episode_reward = 0
+
+        total_rewards_episode = list()
+
+        for i in range(max_iter_episode):
+            # we sample a float from a uniform distribution over 0 and 1
+            # if the sampled flaot is less than the exploration proba
+            #     the agent selects arandom action
+            # else
+            #     he exploits his knowledge using the bellman equation
+
+            if np.random.uniform(0, 1) < exploration_proba:
+                action = env.action_space.sample()
             else:
-                # Predict the probabilities of each action
-                action_probabilities = model.predict(obs)
-                # Choose action with highest probability
-                action = np.argmax(action_probabilities)
+                action = np.argmax(Q_table[current_state, :])
 
-            # Take action in the environment
-            data_collecor.send_command(action)
-            next_obs, reward = env.step(action)
-            next_obs = np.reshape(next_obs, [1, -1])
+            # The environment runs the chosen action and returns
+            # the next state, a reward and true if the epiosed is ended.
+            next_state, reward, done = env.step(action)
 
-            # Store transition in replay memory
-            memory.append((obs, action, reward, next_obs))
-
-            total_reward += reward
-            obs = next_obs
-
-            actions_taken.append(action)  # Store the action taken
-
-            if next_obs[1]:
+            # We update our Q-table using the Q-learning iteration
+            Q_table[current_state, action] = (1 - lr) * Q_table[current_state, action] + lr * (
+                    reward + gamma * max(Q_table[next_state, :]))
+            total_episode_reward = total_episode_reward + reward
+            # If the episode is finished, we leave the for loop
+            if done:
                 break
-
-        # Experience replay
-        if len(memory) >= batch_size:
-            minibatch = random.sample(list(memory), batch_size)  # Convert deque to list for random sampling
-            obs_batch, action_batch, reward_batch, next_obs_batch, done_batch = zip(*minibatch)
-            obs_batch = np.concatenate(obs_batch)
-            next_obs_batch = np.concatenate(next_obs_batch)
-
-            target_batch = np.array(action_batch)  # Target is the action taken
-            model.fit(obs_batch, target_batch, epochs=1, verbose=0)
-
-        # Decay epsilon
-        if epsilon > epsilon_min:
-            epsilon *= epsilon_decay
-
-        # Print episode info
-        print(f"Episode: {episode + 1}/{num_episodes}, Total Reward: {total_reward}, Epsilon: {epsilon}")
-
-    # Close the environment
-    env.close()
+            current_state = next_state
+        # We update the exploration proba using exponential decay formula
+        exploration_proba = max(min_exploration_proba, np.exp(-exploration_decreasing_decay * e))
+        total_rewards_episode.append(total_episode_reward)

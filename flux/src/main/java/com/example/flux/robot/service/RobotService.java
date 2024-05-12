@@ -10,12 +10,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -50,7 +49,7 @@ public class RobotService {
         RobotEntity robotEntity = this.getRobotEntityById(id);
 
         ESP32Data esp32Data = ESP32Data.builder()
-                .imageBase64(value.getBytes(StandardCharsets.UTF_8))
+                .imageBase64(value)
                 .robotEntity(robotEntity)
                 .build();
 
@@ -70,12 +69,19 @@ public class RobotService {
     }
 
     @Transactional
-    public List<byte[]> getDataFromESP32(Integer id) {
+    public List<String> getDataFromESP32(Integer id) {
         return new ArrayList<>(this.robotsRepository.getReferenceById(id)
                 .getEsp32Data())
                 .stream()
                 .sorted(Comparator.comparing(ESP32Data::getId))
                 .map(ESP32Data::getImageBase64)
                 .collect(Collectors.toList());
+    }
+
+    public Map<String, List<?>> getData(Integer id) {
+        Map<String, List<?>> robotData = new HashMap<>();
+        robotData.put("ultrasonic_data", this.getDataFromUltrasonic(id));
+        robotData.put("esp32_data", this.getDataFromESP32(id));
+        return robotData;
     }
 }

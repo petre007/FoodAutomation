@@ -5,10 +5,13 @@ import com.example.flux.robot.service.RobotService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -21,8 +24,8 @@ public class RobotController {
         return ResponseEntity.ok(this.robotService.getRobotEntityById(id));
     }
 
-    @PostMapping("/robot/ultrasonic")
-    public ResponseEntity<List<Integer>> getAllDataFromUltrasonic(@RequestBody Integer id) {
-        return ResponseEntity.ok(this.robotService.getDataFromUltrasonic(id));
+    @GetMapping("/robot/data")
+    public ResponseEntity<Map<String, List<?>>> getAllData(@RequestHeader Integer id) {
+        return ResponseEntity.ok(this.robotService.getData(id));
     }
 }
