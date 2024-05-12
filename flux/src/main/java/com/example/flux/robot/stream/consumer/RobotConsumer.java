@@ -26,7 +26,7 @@ public class RobotConsumer {
 
     @KafkaListener(id = KafkaUtils.GROUP_ID_ESP32, topics = KafkaUtils.ESP32_DATA_CONSUMER)
     public void listenESP32(String in) {
-        log.info(in + " was collected from the " + KafkaUtils.ESP32_DATA_CONSUMER + " topic");
+        log.info( "An image was collected from the " + KafkaUtils.ESP32_DATA_CONSUMER + " topic");
         this.robotService.collectDataFromESP32(in, 1);
     }
 
