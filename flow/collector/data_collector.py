@@ -2,8 +2,6 @@ import base64
 import threading
 import requests
 import json
-import ast
-
 from confluent_kafka import Producer
 
 conf = {'bootstrap.servers': 'localhost:9093',
