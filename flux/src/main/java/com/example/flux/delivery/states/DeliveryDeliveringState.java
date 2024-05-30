@@ -38,7 +38,6 @@ public class DeliveryDeliveringState extends DeliveryStateAbstract implements De
 
         // start robot
         new Thread(() -> {
-            System.out.println("Order entity: "+orderEntity);
             flowService.callEndpoint(FlowUtils.FLOW_RL_MODEL, null, HttpMethodsEnum.GET);
             // when robot reaches the target set order state to DELIVERED
             orderEntity.setStates(States.DELIVERED);
