@@ -1,11 +1,10 @@
-from abc import ABC
-
 import gym
 import matplotlib
 import cv2
 import base64
 import math
 from pupil_apriltags import Detector
+from PIL import Image as im
 
 from collector.data_collector import DataCollector
 
@@ -33,7 +32,7 @@ class CustomLayout(object):
         self.apriltag_detected = False
         self.obstacle_detected = False
 
-    def _create_obstacles(self, start_coord, end_coord):
+    def _create_layout(self, start_coord, end_coord, layout_type):
         start_row, start_col = start_coord
         end_row, end_col = end_coord
 
@@ -42,24 +41,42 @@ class CustomLayout(object):
 
         self.layout[start_row:end_row + 1, start_col:end_col + 1] = 1
 
-        for row in range(start_row, end_row + 1):
-            for col in range(start_col, end_col + 1):
-                self.obstacles.append((row, col))
+        if layout_type == 'O':
+            for row in range(start_row, end_row + 1):
+                for col in range(start_col, end_col + 1):
+                    self.obstacles.append((row, col))
+        elif layout_type == 'T':
+            for row in range(start_row, end_row + 1):
+                for col in range(start_col, end_col + 1):
+                    self.targets.append((row, col))
 
     def generate_obstacles(self):
-        self._create_obstacles([50, 0], [50, 999])
-        self._create_obstacles([300, 0], [300, 40])
-        self._create_obstacles([300, 40], [700, 40])
-        self._create_obstacles([700, 0], [700, 40])
-        self._create_obstacles([450, 500], [450, 700])
-        self._create_obstacles([450, 500], [750, 500])
-        self._create_obstacles([750, 500], [750, 700])
-        self._create_obstacles([450, 700], [750, 700])
+        self._create_layout([50, 0], [50, 999], 'O')
+        self._create_layout([300, 0], [300, 120], 'O')
+        self._create_layout([300, 120], [700, 120], 'O')
+        self._create_layout([700, 0], [700, 120], 'O')
+        self._create_layout([450, 500], [450, 700], 'O')
+        self._create_layout([450, 500], [750, 500], 'O')
+        self._create_layout([750, 500], [750, 700], 'O')
+        self._create_layout([450, 700], [750, 700], 'O')
+        self._create_layout([650, 780], [999, 780], 'O')
+        self._create_layout([999, 780], [999, 999], 'O')
+        self._create_layout([650, 999], [999, 999], 'O')
+        self._create_layout([650, 780], [650, 999], 'O')
+        self._create_layout([800, 0], [800, 350], 'O')
+        self._create_layout([800, 350], [999, 350], 'O')
+
+    def generate_targets(self):
+        self._create_layout([750, 150], [799, 150], 'T')
+        self._create_layout([750, 150], [750, 200], 'T')
+        self._create_layout([750, 200], [799, 200], 'T')
 
 
 class RobotEnv(gym.Env):
     def __init__(self):
         super(RobotEnv, self).__init__()
+        # Train option
+        self.is_training = True
         # Collect data
         self.data_collector = DataCollector()
         self.index = 0
@@ -77,10 +94,11 @@ class RobotEnv(gym.Env):
         # Detection of apriltag
 
     def reset(self, **kwargs):
-        if len(self.data_collector.ultrasonic_data) != 1000:
-            self.data_collector.get_data()
-        # Reset robot's position
-        self.index = 0
+        if self.is_training:
+            if len(self.data_collector.ultrasonic_data) != 1000:
+                self.data_collector.get_data()
+            # Reset robot's position
+            self.index = 0
         self.custom_layout.robot_position = [100, 800]
         return self._get_observation()
 
@@ -104,63 +122,77 @@ class RobotEnv(gym.Env):
         self.custom_layout.robot_position[0] = min(max(self.custom_layout.robot_position[0], 0), 1000)
         self.custom_layout.robot_position[1] = min(max(self.custom_layout.robot_position[1], 0), 1000)
 
-        # Return new observation flag
-        observation = self._get_observation()
+        if self.is_training:
+            # Return new observation flag
+            observation = self._get_observation()
 
-        # Check if robot has collided with an obstacle or with the layout
-        reward = 0
-        if self.custom_layout.obstacle_detected or min(self._get_min_distance_from_layout_obstacles()) < 15:
-            reward -= -1
+            # Check if robot has collided with an obstacle or with the layout
+            reward = 0
+            if self.custom_layout.obstacle_detected or min(self._get_min_distance_from_layout_obstacles()) < 15:
+                reward -= -1
 
-        # Check if robot has reached AprilTag
-        reached_target = False
-        if np.array_equal(self.custom_layout.robot_position, self.custom_layout.targets):
-            reached_target = True
-            reward += 10  # Positive reward for reaching AprilTag
+            # Check if robot has reached AprilTag
+            reached_target = False
+            if np.array_equal(self.custom_layout.robot_position, self.custom_layout.targets):
+                reached_target = True
+                reward += 10  # Positive reward for reaching AprilTag
 
-        # Check if robot detected AprilTag
-        if self.custom_layout.apriltag_detected:
-            reward += 5
+            # Check if robot detected AprilTag
+            if self.custom_layout.apriltag_detected:
+                reward += 5
 
-        return observation, reward, reached_target
+            return observation, reward, reached_target
+        else:
+            return self.custom_layout.robot_position
 
     def _get_observation(self):
-        # Use actual data from ultrasonic to avoid dynamic obstacles
-
-        if self.data_collector.ultrasonic_data[self.index] <= 15:
-            self.custom_layout.obstacle_detected = True
-        else:
-            self.custom_layout.obstacle_detected = False
-
-        # Use the actual robot to retrieve and compare if he got to see an actual apriltag
-
-        image_decoded = decode_image_from_esp32(self.data_collector.esp32_data[self.index])
         try:
-            if len(Detector().detect(image_decoded)) != 0:
-                self.custom_layout.apriltag_detected = True
+            # Use actual data from ultrasonic to avoid dynamic obstacles
+
+            if self.data_collector.ultrasonic_data[self.index] <= 15:
+                self.custom_layout.obstacle_detected = True
             else:
+                self.custom_layout.obstacle_detected = False
+
+            # Use the actual robot to retrieve and compare if he got to see an actual apriltag
+
+            image_decoded = decode_image_from_esp32(self.data_collector.esp32_data[self.index])
+            try:
+                if len(Detector().detect(image_decoded)) != 0:
+                    self.custom_layout.apriltag_detected = True
+                else:
+                    self.custom_layout.apriltag_detected = False
+            except:
                 self.custom_layout.apriltag_detected = False
+
+            self.index = self.index + 1
+
+            return self.custom_layout.robot_position
         except:
-            self.custom_layout.apriltag_detected = False
+            return self.custom_layout.robot_position
 
-        self.index=self.index+1
+    @staticmethod
+    def save(Q_table):
+        np.save(file="q_table.npy", arr=Q_table)
 
-        return self.custom_layout.robot_position
+    @staticmethod
+    def load():
+        return np.load(file="q_table.npy")
 
+    def render(self):
+        plt.figure()
+        plt.imshow(im.fromarray(self.custom_layout.layout))  # Initialize empty plot
 
-def render(self):
-    plt.figure()
-    plt.imshow(self.custom_layout.layout)  # Initialize empty plot
+        # Plot obstacles (red)
+        for obstacle_pos in self.custom_layout.obstacles:
+            plt.scatter(obstacle_pos[0], obstacle_pos[1], color='red')
 
-    # Plot obstacles (red)
-    for obstacle_pos in self.custom_layout.obstacles:
-        plt.scatter(obstacle_pos[0], obstacle_pos[1], color='red')
+        # Plot robot (blue)
+        plt.scatter(self.custom_layout.robot_position[0], self.custom_layout.robot_position[1], color='blue')
 
-    # Plot robot (blue)
-    plt.scatter(self.custom_layout.robot_position[0], self.custom_layout.robot_position[1], color='blue')
-
-    # Plot target (green)
-    plt.scatter(self.custom_layout.targets[0], self.custom_layout.targets[1], color='green')
-    plt.legend(['Obstacles', 'Robot', 'Target'])
-    plt.title('Robot Environment')
-    plt.show()
+        # Plot target (green)
+        for target_pos in self.custom_layout.targets:
+            plt.scatter(target_pos[0], target_pos[1], color='green')
+        plt.legend(['Obstacles', 'Robot', 'Target'])
+        plt.title('Robot Environment')
+        plt.show()

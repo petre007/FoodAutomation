@@ -9,3 +9,4 @@ numpy~=1.26.4
 gym~=0.26.2
 matplotlib~=3.8.4
 requests~=2.31.0
+pillow~=10.3.0

@@ -21,7 +21,7 @@ public class RobotPanelBean {
 
     @Bean
     public void initRobotPanel() {
-       this.robotPanel = new RobotPanel(kafkaTemplate);
+        this.robotPanel = new RobotPanel(kafkaTemplate);
     }
 
     @KafkaListener(id = KafkaUtils.GROUP_ID_ULTRASONIC, topics = KafkaUtils.ULTRASONIC_DATA_CONSUMER)
@@ -32,8 +32,9 @@ public class RobotPanelBean {
 
     @KafkaListener(id = KafkaUtils.GROUP_ID_ESP32, topics = KafkaUtils.ESP32_DATA_CONSUMER)
     public void esp32Consumer(String in) throws IOException {
-        log.info("Value from esp32: " + in);
-        this.robotPanel.setImage(in);
+        if (in != null) {
+            this.robotPanel.setImage(in);
+        }
     }
 
 }

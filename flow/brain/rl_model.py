@@ -1,16 +1,24 @@
 import os
 
 from brain.environment import RobotEnv
+from confluent_kafka import Producer
 from collector.data_collector import DataCollector
 
 os.environ["KERAS_BACKEND"] = "tensorflow"
 
 import numpy as np
 
+conf = {'bootstrap.servers': 'localhost:9093',
+        'broker.address.family': 'v4',
+        "default.topic.config": {"auto.offset.reset": "earliest"},
+        'group.id': 'ULTRASONIC'}
+
 
 def rl_model_train():
     # Instantiate environment and agent
     env = RobotEnv()
+    env.is_training = True
+
     state_size = env.observation_space.n
     action_size = env.action_space.n
     Q_table = np.zeros((state_size, action_size))
@@ -54,22 +62,46 @@ def rl_model_train():
             #     he exploits his knowledge using the bellman equation
 
             if np.random.uniform(0, 1) < exploration_proba:
+                print("action here")
                 action = env.action_space.sample()
             else:
+                print("action there")
                 action = np.argmax(Q_table[current_state, :])
 
             # The environment runs the chosen action and returns
-            # the next state, a reward and true if the epiosed is ended.
+            # the next state, a reward and true if the episod is ended.
+            print(env.step(action))
             next_state, reward, done = env.step(action)
-
+            print(action)
+            print(Q_table[current_state, action])
             # We update our Q-table using the Q-learning iteration
             Q_table[current_state, action] = (1 - lr) * Q_table[current_state, action] + lr * (
-                    reward + gamma * max(Q_table[next_state, :]))
+                    reward + gamma * np.max(Q_table[next_state, :]))
             total_episode_reward = total_episode_reward + reward
             # If the episode is finished, we leave the for loop
             if done:
+                print("The q-table model was created and saved...")
+                env.save(Q_table)
                 break
             current_state = next_state
         # We update the exploration proba using exponential decay formula
         exploration_proba = max(min_exploration_proba, np.exp(-exploration_decreasing_decay * e))
         total_rewards_episode.append(total_episode_reward)
+
+
+# use this method when an order is on the Queue
+# use something like done to exit the scope
+# MAYBE SAVE ALL THE ACTIONS AND MAKE THE ROBOT COME BACK TO THE CURRENT POSITION
+def rl_model():
+    producer = Producer(conf)
+    env = RobotEnv()
+    env.is_training = False
+    current_state = env.reset()
+
+    Q_table = env.load()
+    while not env.is_training:
+        action = int(np.argmax(Q_table[current_state, :]))
+        next_state = env.step(action)
+        current_state = next_state
+        producer.produce("output_from_rl_model", value=str(action))
+        producer.flush()

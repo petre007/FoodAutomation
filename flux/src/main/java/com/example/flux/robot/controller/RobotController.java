@@ -1,13 +1,10 @@
 package com.example.flux.robot.controller;
 
-import com.example.flux.robot.model.RobotEntity;
 import com.example.flux.robot.service.RobotService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
@@ -18,11 +15,6 @@ import java.util.Map;
 public class RobotController {
 
     private final RobotService robotService;
-
-    @PostMapping("/robot")
-    public ResponseEntity<RobotEntity> getRobotById(@RequestBody Integer id) {
-        return ResponseEntity.ok(this.robotService.getRobotEntityById(id));
-    }
 
     @GetMapping("/robot/data")
     public ResponseEntity<Map<String, List<?>>> getAllData(@RequestHeader Integer id) {

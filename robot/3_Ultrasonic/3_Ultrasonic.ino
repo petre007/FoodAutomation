@@ -106,26 +106,26 @@ void Move()
     case GO_FORWARD:
     {
      Serial.println("GO_FORWARD command taken");
-     Move_Forward(1000);
-     delay(1000);
+     Move_Forward(100);
+     delay(50);
     }break;
     case GO_BACKWARD:
     {
      Serial.println("GO_BACKWARD command taken");
-     Move_Backward(1000);
-     delay(1000);    
+     Move_Backward(100);
+     delay(50);    
     }break;
     case GO_LEFT:
     {
      Serial.println("GO_LEFT command taken");
-     Rotate_Left(500);
-     delay(1000);
+     Rotate_Left(100);
+     delay(50);
     }break;
     case GO_RIGHT:
     {
      Serial.println("GO_RIGHT command taken");
-     Rotate_Right(500);
-     delay(1000);
+     Rotate_Right(100);
+     delay(50);
     }break;
     default:{
         Stop();

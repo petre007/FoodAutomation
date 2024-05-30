@@ -28,7 +28,7 @@
 //#define CAMERA_MODEL_M5STACK_PSRAM
 #define CAMERA_MODEL_AI_THINKER
 
-const char *ssid = "PETRE-WIFI_2.4GHz";		   // Enter SSID WIFI Name
+const char *ssid = "PETRE-WIFI_2.4GHz";       // Enter SSID WIFI Name
 const char *password = "petrenet01"; // Enter WIFI Password
 
 #if defined(CAMERA_MODEL_WROVER_KIT)
@@ -150,23 +150,24 @@ void setup()
 	sensor_t *s = esp_camera_sensor_get();
 	s->set_framesize(s, FRAMESIZE_CIF);
 
-	WiFi.begin(ssid, password);
+  WiFi.begin(ssid, password);
 
-	while (WiFi.status() != WL_CONNECTED)
-	{
-		delay(500);
-		Serial.print(".");
-	}
-	Serial.println("");
-	Serial.println("WiFi connected");
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("");
+  Serial.println("WiFi connected");
 
-	startCameraServer();
+  startCameraServer();
 
-	Serial.print("Camera Ready! Use 'http://");
-	Serial.print(WiFi.localIP());
-	WiFiAddr = WiFi.localIP().toString();
-	Serial.println("' to connect");
+  Serial.print("Camera Ready! Use 'http://");
+  Serial.print(WiFi.localIP());
+  WiFiAddr = WiFi.localIP().toString();
+  Serial.println("' to connect");
 }
+
 
 void sendImageToSerial() {
   camera_fb_t* fb = esp_camera_fb_get();
@@ -189,5 +190,5 @@ void loop()
 {
     // Capture and send image
     sendImageToSerial();
-    delay(200)
+    delay(500);
 }

@@ -6,6 +6,7 @@ import com.example.robot_controller.commands.RobotMoveForward;
 import com.example.robot_controller.commands.RobotMoveLeft;
 import com.example.robot_controller.commands.RobotMoveRight;
 import com.example.robot_controller.commands.RobotMoveStop;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.kafka.core.KafkaTemplate;
 
@@ -18,6 +19,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+@Slf4j
 public class RobotPanel extends JFrame {
 
     private KafkaTemplate<String, String> kafkaTemplate;
@@ -79,10 +81,18 @@ public class RobotPanel extends JFrame {
     }
 
     public void setImage(String imageBase64) throws IOException {
-        byte[] btDataFile = Base64.decodeBase64(imageBase64);
-        BufferedImage image = ImageIO.read(new ByteArrayInputStream(btDataFile));
-        ImageIcon icon = new ImageIcon(image);
-        this.imageLabel.setIcon(icon);
+        try {
+            byte[] btDataFile = Base64.decodeBase64(imageBase64);
+            BufferedImage image = ImageIO.read(new ByteArrayInputStream(btDataFile));
+            if (image != null) {
+                ImageIcon icon = new ImageIcon(image);
+                this.imageLabel.setIcon(icon);
+            } else {
+                log.info("Image was null");
+            }
+        } catch (Exception e) {
+            log.error("Could not convert image");
+        }
     }
 
 }

@@ -1,6 +1,7 @@
 from flask import Flask
 
 from collector.data_collector import DataCollector
+from brain.rl_model import rl_model
 
 app = Flask(__name__)
 
@@ -17,6 +18,11 @@ def create_connexion():  # put application's code here
         return "Connection established"
     else:
         return "Connection already established"
+
+
+@app.route('/rl_model', methods=['GET'])
+def start_rl_model():
+    rl_model()
 
 
 if __name__ == '__main__':

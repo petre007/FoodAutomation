@@ -11,17 +11,6 @@ conf = {'bootstrap.servers': 'localhost:9093',
 
 get_data_url = "http://localhost:8080/robot/data"
 
-def deserialize_byte_array(byte_array_str):
-    try:
-        return bytearray(base64.b64decode(byte_array_str))
-    except:
-        return []
-
-
-def deserialize_list_of_byte_arrays(data):
-    byte_arrays = data.split(';')
-    return [deserialize_byte_array(byte_array_str) for byte_array_str in byte_arrays]
-
 
 class DataCollector:
     _instance = None
@@ -46,7 +35,7 @@ class DataCollector:
         return self.producer
 
     def get_data(self):
-        response = requests.get(url=get_data_url, headers={"id" : "1"})
+        response = requests.get(url=get_data_url, headers={"id": "1"})
         data = json.loads(response.content)
         self.ultrasonic_data = data["ultrasonic_data"]
         self.esp32_data = data["esp32_data"]
