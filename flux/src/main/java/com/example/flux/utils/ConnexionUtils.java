@@ -8,9 +8,6 @@ public class ConnexionUtils {
     public final static String CONNEXION_NOT_SUCCESSFUL = "not_successful";
     public final static String CREATE_CONNEXION_ENDPOINT = "create_connexion";
 
-    public final static String FLOW_CONNEXION = "localhost";
-    public final static String FLOW_PORT = "5000";
-
     public static String getURL(String connexionString, String port, String endpoint) {
         if (port == null) {
             port = "";

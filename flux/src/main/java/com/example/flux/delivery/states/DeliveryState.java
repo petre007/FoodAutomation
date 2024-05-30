@@ -6,7 +6,7 @@ import com.example.flux.room.model.RoomEntity;
 
 public interface DeliveryState {
 
-    void updateDeliveryStatus() throws DeliveryStateException;
+    void updateDeliveryStatus() throws DeliveryStateException, UnsupportedOperationException;
 
     void setOrderRepository(OrderRepository orderRepository);
 

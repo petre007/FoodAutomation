@@ -1,5 +1,6 @@
 package com.example.flux.delivery.service;
 
+import com.example.flux.connector.service.FlowService;
 import com.example.flux.delivery.model.OrderEntity;
 import com.example.flux.delivery.model.States;
 import com.example.flux.delivery.repository.OrderRepository;
@@ -34,11 +35,11 @@ public class DeliveryService {
     private final UserRepository userRepository;
     private final FoodRepository foodRepository;
     private final KafkaTemplate<String, String> kafkaTemplate;
-
+    private final FlowService flowService;
 
     @Transactional
     public void deliveryFlow(OrderEntity orderEntity, States states, String token)
-            throws NoGrantedAuthorityException, DeliveryStateException {
+            throws NoGrantedAuthorityException, DeliveryStateException, UnsupportedOperationException {
         DeliveryContext context = new DeliveryContext();
 
         Set<FoodModel> foodModels = orderEntity.getFoodModelSet().stream()
@@ -66,7 +67,7 @@ public class DeliveryService {
             }
             case DELIVERING -> {
                 this.jwtService.checkRole(token, Roles.ROLE_EMPLOYEE);
-                context.setCurrentState(new DeliveryDeliveringState(kafkaTemplate));
+                context.setCurrentState(new DeliveryDeliveringState(kafkaTemplate, flowService));
             }
             default -> log.info(states + " is not a valid state");
         }

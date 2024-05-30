@@ -22,6 +22,7 @@ def create_connexion():  # put application's code here
 
 @app.route('/rl_model', methods=['GET'])
 def start_rl_model():
+    print("start_rl_model called")
     rl_model()
 
 

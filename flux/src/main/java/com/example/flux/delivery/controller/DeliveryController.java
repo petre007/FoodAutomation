@@ -25,7 +25,7 @@ public class DeliveryController {
     @PostMapping("/update_state")
     public ResponseEntity<String> updateDeliveryState(@RequestHeader String token,
                                                       @RequestBody UpdateDeliveryStateRequestBody requestBody)
-            throws NoGrantedAuthorityException, DeliveryStateException {
+            throws NoGrantedAuthorityException, DeliveryStateException, UnsupportedOperationException {
         this.deliveryService.deliveryFlow(requestBody.getOrderEntity(),
                 requestBody.getStates(),
                 token);
