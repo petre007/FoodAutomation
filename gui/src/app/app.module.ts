@@ -10,12 +10,16 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthComponent } from './components/auth/component/auth/auth.component';
 import { EmployeeComponent } from './components/employee/component/employee/employee.component';
+import { ClientComponent } from './components/client/component/client/client.component';
+import { AdminComponent } from './components/admin/admin/admin.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AuthComponent,
-    EmployeeComponent
+    EmployeeComponent,
+    ClientComponent,
+    AdminComponent
   ],
   imports: [
     BrowserModule,

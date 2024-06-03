@@ -18,7 +18,12 @@ getLogin(username: string, password: string): void {
     this.authService.login(username, password).subscribe((authResponse)=> {
       localStorage.setItem("token", authResponse.token)
       localStorage.setItem("roles", authResponse.roles)
-      this.router.navigate(["/homePage"])
+      switch (authResponse.roles) {
+        case "ROLE_CLIENT": this.router.navigate(["/client"]); break;
+        case "ROLE_EMPLOYEE": this.router.navigate(["/employee"]); break;
+        case "ROLE_ADMIN": this.router.navigate(["/admin"]); break;
+        default: alert("No route defined for this role"); break;
+      }    
     })
   } catch (catchError) {
     alert("Username or password incorect")
