@@ -1,0 +1,23 @@
+<div class="auth-login ">
+    <div class="centered-container">
+        <h1>Login</h1>
+        <form cForm #gfg = "ngForm">
+        <p class="centered-form">
+          <mat-form-field appearance="fill">
+            <input name="username" matInput placeholder="Username" ngModel>
+          </mat-form-field>
+        </p>
+        <p class="centered-form">
+          <mat-form-field appearance="outline">
+            <input name="password" type="password" matInput placeholder="Password" ngModel>
+          </mat-form-field>
+        </p>
+        <p class="centered-form">
+            <mat-form-field appearance="outline">
+                <button mat-flat-button color="primary"(click)="getLogin(gfg.value['username'], gfg.value['password'])">Login</button>
+            </mat-form-field>
+            
+          </p>
+        </form>
+      </div>
+    </div>
