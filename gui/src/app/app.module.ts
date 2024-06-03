@@ -12,6 +12,12 @@ import { AuthComponent } from './components/auth/component/auth/auth.component';
 import { EmployeeComponent } from './components/employee/component/employee/employee.component';
 import { ClientComponent } from './components/client/component/client/client.component';
 import { AdminComponent } from './components/admin/admin/admin.component';
+import {MatIconModule} from '@angular/material/icon';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+
 
 @NgModule({
   declarations: [
@@ -29,7 +35,12 @@ import { AdminComponent } from './components/admin/admin/admin.component';
     FormsModule,
     MatFormFieldModule,
     MatCardModule,
-    MatInputModule
+    MatInputModule,
+    MatButtonModule, 
+    MatDividerModule, 
+    MatIconModule,
+    MatCheckboxModule,
+    MatButtonToggleModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

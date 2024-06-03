@@ -1,0 +1,1 @@
+RUN ng add @angular/material 

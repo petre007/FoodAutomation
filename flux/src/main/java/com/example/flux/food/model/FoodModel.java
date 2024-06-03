@@ -2,7 +2,6 @@ package com.example.flux.food.model;
 
 import com.example.flux.delivery.model.OrderEntity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
