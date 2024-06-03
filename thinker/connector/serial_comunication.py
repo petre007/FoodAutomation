@@ -5,7 +5,7 @@ from confluent_kafka import Producer, Consumer, KafkaError
 conf = {'bootstrap.servers': '192.168.1.128:9094',
         'broker.address.family': 'v4',
         "default.topic.config": {"auto.offset.reset": "earliest"},
-        'group.id': 'OUTPUT'}
+        'group.id': 'OUTPUT_2'}
 
 topics_list = ['output_data']
 
@@ -42,7 +42,7 @@ def read_data_from_esp32():
 
 def send_data():
     consumer = Consumer(conf)
-    ser = serial.Serial(port="/dev/ttyUSB0", baudrate=9600)
+    # ser = serial.Serial(port="/dev/ttyUSB0", baudrate=9600)
     print("Started send_data")
     consumer.subscribe(topics_list)
     try:
@@ -60,9 +60,9 @@ def send_data():
                 val = msg.value().decode('utf-8')
                 print(val)
                 topic = msg.topic()
-                if topic == 'output_data':
-                    ser.write(bytes(val, 'utf-8'))
-                    ser.flush()
+                # if topic == 'output_data':
+                #     ser.write(bytes(val, 'utf-8'))
+                #     ser.flush()
                 print(f'Received: {val} from topic {topic}    ')
                 consumer.commit(msg)
 

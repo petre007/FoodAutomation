@@ -1,6 +1,7 @@
 package com.example.flux.robot.stream.consumer;
 
 import com.example.flux.kafka.utils.KafkaUtils;
+import com.example.flux.robot.model.OutputDataType;
 import com.example.flux.robot.service.RobotService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,8 +31,14 @@ public class RobotConsumer {
         this.robotService.collectDataFromESP32(in, 1);
     }
 
-//    @KafkaListener(id = KafkaUtils.GROUP_ID_OUTPUT, topics = KafkaUtils.OUTPUT_DATA_CONSUMER)
-//    public void listenOutput(String in) {
-//        log.info(in + " was collected from the " + KafkaUtils.OUTPUT_DATA_CONSUMER + " topic");
-//    }
+    @KafkaListener(id = KafkaUtils.GROUP_ID_OUTPUT, topics = KafkaUtils.OUTPUT_DATA_CONSUMER)
+    public void listenOutput(String in) {
+        try {
+            log.info(in + " was collected from the " + KafkaUtils.OUTPUT_DATA_CONSUMER + " topic");
+            this.robotService.collectDataFromOutputCommands(Integer.parseInt(in), 1, OutputDataType.MANUAL);
+        } catch (NumberFormatException e) {
+            log.error(in + " incorrect value for " + KafkaUtils.OUTPUT_DATA_CONSUMER + " topic");
+        }
+
+    }
 }

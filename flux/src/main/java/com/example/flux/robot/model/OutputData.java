@@ -32,6 +32,10 @@ public class OutputData {
     @Column(name = "value")
     private Integer value;
 
+
+    @Column(name = "type")
+    private OutputDataType outputDataType;
+
     @ManyToOne
     @JoinColumn(name = "robot_id")
     private RobotEntity robotEntity;
