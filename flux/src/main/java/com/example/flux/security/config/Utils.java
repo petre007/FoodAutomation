@@ -9,7 +9,8 @@ public class Utils {
             "/room/get_all_rooms/**",
             "/robot/data",
             "/delivery/**",
-            "/food/**"
+            "/food/**",
+            "/param/**"
     };
 
 

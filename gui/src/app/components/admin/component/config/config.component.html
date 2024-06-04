@@ -1,0 +1,23 @@
+<app-navbar></app-navbar>
+<button mat-flat-button color="primary" (click) = 'updateParam()'>Save</button>
+<table class="table">
+
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr *ngFor = "let tempConfig of configs">
+            <td> {{tempConfig.name}}</td>
+            <td>{{tempConfig.description}}</td>
+            <td>
+                <input type="text" [(ngModel)]="tempConfig.value" />
+            </td>
+        </tr>
+    </tbody>
+
+</table>

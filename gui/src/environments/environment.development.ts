@@ -3,4 +3,6 @@ export const environment = {
     loginEnpoint: '/api/auth/login',
     getAllFoods: '/food/get_all_foods',
     getAllOrders: '/delivery/get_all',
+    getParams: "/param/get_all",
+    updateParam: "/param/update"
 };

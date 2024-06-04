@@ -17,6 +17,11 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import { AdminComponent } from './components/admin/component/admin/admin.component';
+import { NavbarComponent } from './components/admin/component/navbar/navbar.component';
+import { ConfigComponent } from './components/admin/component/config/config.component';
+import {MatGridListModule} from '@angular/material/grid-list';
+import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
+
 
 
 @NgModule({
@@ -25,7 +30,9 @@ import { AdminComponent } from './components/admin/component/admin/admin.compone
     AuthComponent,
     EmployeeComponent,
     ClientComponent,
-    AdminComponent
+    AdminComponent,
+    NavbarComponent,
+    ConfigComponent
   ],
   imports: [
     BrowserModule,
@@ -41,6 +48,8 @@ import { AdminComponent } from './components/admin/component/admin/admin.compone
     MatIconModule,
     MatCheckboxModule,
     MatButtonToggleModule,
+    MatGridListModule,
+    CanvasJSAngularChartsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
