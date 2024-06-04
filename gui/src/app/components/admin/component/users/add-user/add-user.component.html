@@ -1,0 +1,32 @@
+<div class="centered-container">
+    <mat-card class="example-card">
+    <mat-card-content>
+        <form cForm #gfg = "ngForm">
+            <div class="centered-container">
+                <mat-form-field>
+                    <mat-label>Username</mat-label>
+                    <input matInput name="username" ngModel required>
+                  </mat-form-field>
+                  <mat-form-field>
+                    <mat-label>Password</mat-label>
+                    <input matInput name="password" ngModel required>
+                  </mat-form-field>
+                  <mat-form-field>
+                    <mat-label>Select</mat-label>
+                    <mat-select name="role" ngModel required>
+                      <mat-option value="ROLE_ADMIN">ROLE_ADMIN</mat-option>
+                      <mat-option value="ROLE_EMPLOYEE">ROLE_EMPLOYEE</mat-option>
+                      <mat-option value="ROLE_CLIENT">ROLE_CLIENT</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <br>
+                    <button mat-flat-button color="primary" 
+                    (click)="addUser(gfg.value['username'], gfg.value['password'], gfg.value['role'])">Add User</button>
+        </div>
+        </form>
+        
+        </mat-card-content>
+    
+  </mat-card>
+  
+</div>

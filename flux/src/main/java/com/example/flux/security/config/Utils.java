@@ -10,7 +10,8 @@ public class Utils {
             "/robot/data",
             "/delivery/**",
             "/food/**",
-            "/param/**"
+            "/param/**",
+            "/user/**"
     };
 
 

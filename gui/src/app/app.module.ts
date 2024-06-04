@@ -21,7 +21,12 @@ import { NavbarComponent } from './components/admin/component/navbar/navbar.comp
 import { ConfigComponent } from './components/admin/component/config/config.component';
 import {MatGridListModule} from '@angular/material/grid-list';
 import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
-
+import { UsersComponent } from './components/admin/component/users/users/users.component';
+import {MatListModule} from '@angular/material/list';
+import { AddUserComponent } from './components/admin/component/users/add-user/add-user.component';
+import { UserFormComponent } from './components/admin/component/users/user-form/user-form.component';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatSelectModule} from '@angular/material/select';
 
 
 @NgModule({
@@ -32,7 +37,10 @@ import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
     ClientComponent,
     AdminComponent,
     NavbarComponent,
-    ConfigComponent
+    ConfigComponent,
+    UsersComponent,
+    AddUserComponent,
+    UserFormComponent
   ],
   imports: [
     BrowserModule,
@@ -49,7 +57,10 @@ import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
     MatCheckboxModule,
     MatButtonToggleModule,
     MatGridListModule,
-    CanvasJSAngularChartsModule
+    CanvasJSAngularChartsModule,
+    MatListModule,
+    MatTabsModule,
+    MatSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent]

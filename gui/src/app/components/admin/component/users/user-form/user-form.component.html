@@ -1,0 +1,20 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr *ngFor = "let tempUser of usersInfo">
+            <td> {{tempUser.username}}</td>
+            <td>{{tempUser.role}}</td>
+            <td>
+                <button mat-flat-button color="warn" (click) = 'deleteUser(tempUser.id)'>Delete</button>
+            </td>
+        </tr>
+    </tbody>
+
+</table>

@@ -5,6 +5,7 @@ import { ClientComponent } from './components/client/component/client/client.com
 import { EmployeeComponent } from './components/employee/component/employee/employee.component';
 import { AdminComponent } from './components/admin/component/admin/admin.component';
 import { ConfigComponent } from './components/admin/component/config/config.component';
+import { UsersComponent } from './components/admin/component/users/users/users.component';
 
 const routes: Routes = [
   {path: 'auth', component:AuthComponent},
@@ -12,6 +13,7 @@ const routes: Routes = [
   {path: 'client', component:ClientComponent},
   {path: 'employee', component:EmployeeComponent},
   {path: 'admin/config', component:ConfigComponent},
+  {path: 'admin/users', component:UsersComponent},
 ];
 
 

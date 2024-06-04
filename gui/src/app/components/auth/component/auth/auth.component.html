@@ -1,23 +1,28 @@
 <div class="auth-login ">
     <div class="centered-container">
         <h1>Login</h1>
-        <form cForm #gfg = "ngForm">
-        <p class="centered-form">
-          <mat-form-field appearance="fill">
-            <input name="username" matInput placeholder="Username" ngModel>
-          </mat-form-field>
-        </p>
-        <p class="centered-form">
-          <mat-form-field appearance="outline">
-            <input name="password" type="password" matInput placeholder="Password" ngModel>
-          </mat-form-field>
-        </p>
-        <p class="centered-form">
-            <mat-form-field appearance="outline">
-                <button mat-flat-button color="primary"(click)="getLogin(gfg.value['username'], gfg.value['password'])">Login</button>
-            </mat-form-field>
-            
-          </p>
-        </form>
+        <mat-card class="example-card">
+          <mat-card-content>
+              <form cForm #gfg = "ngForm">
+                  <div class="centered-container">
+                      <mat-form-field>
+                          <mat-label>Username</mat-label>
+                          <input matInput name="username" placeholder="Username" ngModel required>
+                        </mat-form-field>
+                        <mat-form-field>
+                          <mat-label>Password</mat-label>
+                          <input matInput name="password" placeholder="Password" type="password" ngModel required>
+                        </mat-form-field>
+                        <mat-form-field>
+                        </mat-form-field>
+                        <br>
+                          <button mat-flat-button color="primary" 
+                          (click)="getLogin(gfg.value['username'], gfg.value['password'])">Login</button>
+              </div>
+              </form>
+              
+              </mat-card-content>
+          
+        </mat-card>
       </div>
     </div>
