@@ -9,6 +9,9 @@ import com.example.flux.robot.repository.ESP32Repository;
 import com.example.flux.robot.repository.OutputRepository;
 import com.example.flux.robot.repository.RobotsRepository;
 import com.example.flux.robot.repository.UltrasonicRepository;
+import com.example.flux.security.config.JwtService;
+import com.example.flux.security.exception.NoGrantedAuthorityException;
+import com.example.flux.user.model.Roles;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +32,7 @@ public class RobotService {
     private final UltrasonicRepository ultrasonicRepository;
     private final ESP32Repository esp32Repository;
     private final OutputRepository outputRepository;
+    private final JwtService jwtService;
 
     public RobotEntity getRobotEntityById(Integer id) {
         return this.robotsRepository.getReferenceById(id);
@@ -95,6 +99,13 @@ public class RobotService {
                 .sorted(Comparator.comparing(ESP32Data::getId))
                 .map(ESP32Data::getImageBase64)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<Integer> getDataFromUltrasonic(String token, Integer id)
+            throws NoGrantedAuthorityException {
+        this.jwtService.checkRole(token, Roles.ROLE_ADMIN);
+        return this.getDataFromUltrasonic(id);
     }
 
     @Transactional

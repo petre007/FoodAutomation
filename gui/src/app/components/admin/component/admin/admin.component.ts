@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { RobotService } from '../../service/robot.service';
 
 @Component({
   selector: 'app-admin',
@@ -7,31 +8,27 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AdminComponent implements OnInit {
 
-  constructor() {}
+	ultrasonic_data: number[] = []	
+
+  constructor(private robotService: RobotService) {}
 
   ngOnInit(): void {
-
+		this.robotService.getUltrasonicData(1).subscribe(data=>{
+			this.ultrasonic_data = data;
+		})
   }
 
   title = 'angular17ssrapp';
-	generateRandomData = () => {
-		var y  = 1000, dps = [];
-		for(var i = 0; i < 1000; i++) {
-			y += Math.ceil(Math.random() * 10 - 5);
-			dps.push({ y: y});
-		}
-		return dps;
-	}
 	chartOptions = {
 	  zoomEnabled: true,
 	  exportEnabled: true,
 	  theme: "light2",
 	  title: {
-		text: "Try Zooming & Panning"
+		text: "Ultrasonic Data"
 	  },
 	  data: [{
 		type: "line",
-		dataPoints: this.generateRandomData()
+		dataPoints: this.ultrasonic_data
 	  }]
 	}
 
@@ -40,10 +37,10 @@ export class AdminComponent implements OnInit {
 	  theme: "dark2",
 	  exportEnabled: true,
 	  title: {
-		  text: "Developer Work Week"
+		  text: "Orders Chart"
 	  },
 	  subtitles: [{
-		  text: "Median hours/week"
+		  
 	  }],
 	  data: [{
 		  type: "pie", //change type to column, line, area, doughnut, etc
