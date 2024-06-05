@@ -8,5 +8,6 @@ export const environment = {
     getAllUsers: "/user/get_all",
     addUser: "/user/add",
     deleteUser: "/user/delete",
-    getUltrasonicDataFromRobot: "/robot/ultrasonic_data"
+    getUltrasonicDataFromRobot: "/robot/ultrasonic_data",
+    updateDeliveryState: "/delivery/update_state"
 };

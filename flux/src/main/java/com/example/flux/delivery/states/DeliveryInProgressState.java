@@ -12,6 +12,7 @@ public class DeliveryInProgressState extends DeliveryStateAbstract implements De
         if (!orderEntity.getStates().equals(States.PENDING)) {
             throw new DeliveryStateException(DeliveryUtils.deliveryExceptionMessage);
         }
+        orderEntity.setRoomEntity(this.getRoomEntity());
         orderEntity.setStates(States.IN_PROGRESS);
         this.getOrderRepository().save(orderEntity);
     }

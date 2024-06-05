@@ -33,6 +33,7 @@ export class UsersService {
     .subscribe(response=> {
       
     });
+    location.reload()
     alert("User added")
   }
 

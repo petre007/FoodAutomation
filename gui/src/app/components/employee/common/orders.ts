@@ -3,12 +3,12 @@ import { Foods } from "../../client/common/foods";
 
 export class Orders {
 
-    id: number | undefined;
+    id: number | undefined | null;
 
-    roomEntity: Rooms | undefined;
+    roomEntity: Rooms | undefined | null;
 
-    foodModelSet: Foods[] | undefined;
+    foodModelSet: Foods[] | undefined | null;
 
-    states: string | undefined;
+    states: string | undefined | null;
 
 }
