@@ -18,9 +18,6 @@ export class RobotService {
   constructor(private http: HttpClient) { }
 
   public getUltrasonicData(id: number): Observable<number[]>{
-    const reqBody = {
-      id: id
-    }
-    return this.http.post<number[]>(environment.apiUrl+environment.getUltrasonicDataFromRobot, JSON.stringify(reqBody), this.httpOptions)
+    return this.http.post<number[]>(environment.apiUrl+environment.getUltrasonicDataFromRobot, JSON.stringify(id), this.httpOptions)
   }
 }

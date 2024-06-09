@@ -19,7 +19,7 @@ public class KafkaConfig {
     @Bean
     public KafkaAdmin admin() {
         Map<String, Object> config = new HashMap<>();
-        config.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9093");
+        config.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "51.107.12.112:80");
         return new KafkaAdmin(config);
     }
 
@@ -28,7 +28,7 @@ public class KafkaConfig {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
-                "localhost:9093");
+                "51.107.12.112:80");
         configProps.put(
                 ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
                 StringSerializer.class);

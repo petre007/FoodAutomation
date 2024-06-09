@@ -1,12 +1,21 @@
 version: "3.7"
 services:
-  # flux:
-  #   restart: always
-  #   image: petredocker007/flux-app:latest
-  #   ports:
-  #     - "80:8080"
-  #   depends_on:
-  #     - kafka
+
+  flow:
+    restart: always
+    image: petredocker007/flow-app:latest
+    ports:
+      - "5000:5000"
+    depends_on:
+      - flux
+
+  flux:
+    restart: always
+    image: petredocker007/flux-app:latest
+    ports:
+      - "80:8080"
+    depends_on:
+      - kafka
 
   zookeeper:
     restart: always
@@ -31,7 +40,7 @@ services:
       - ALLOW_PLAINTEXT_LISTENER=yes
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT,EXTERNAL_DIFFERENT_HOST:PLAINTEXT
       - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093,EXTERNAL_DIFFERENT_HOST://:9094
-      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093,EXTERNAL_DIFFERENT_HOST://foodautomation-backend.azurewebsites.net:9094
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093,EXTERNAL_DIFFERENT_HOST://foodautomation-webapp.azurewebsites.net:9094
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
     depends_on:
       - zookeeper

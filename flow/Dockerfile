@@ -1,13 +1,36 @@
-FROM python:3.8-slim-buster
+# Stage 1: Build stage
+FROM python:3.9 as builder
 
-WORKDIR /python-docker
+WORKDIR /app
 
-MAINTAINER petredumitru1@gmail.com
+# Copy requirements.txt to the container
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
+COPY requirements.txt .
+RUN pip install --upgrade pip
+RUN pip install --upgrade setuptools wheel
 
-COPY requirements.txt requirements.txt
 
-RUN pip3 install -r requirements.txt
+# Install dependencies
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
+RUN pip install pupil-apriltags
+RUN pip install -U flask-cors
 
+# Copy the application source code
 COPY . .
+RUN rm requirements.txt
 
-CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
+# Stage 2: Production stage
+FROM builder
+
+WORKDIR /app
+
+# Copy the installed dependencies from the previous stage
+COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
+
+# Copy the application source code from the previous stage
+COPY --from=builder /app/* .
+
+# Expose port 80
+EXPOSE 80
+
+CMD ["python","app.py"]

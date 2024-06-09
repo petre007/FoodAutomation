@@ -13,8 +13,12 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         log.info("CORS setup configuration started");
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:4200")
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedOrigins("http://localhost:4200",
+                        "http://localhost",
+                        "https://foodautomation-webapp.azurewebsites.net/",
+                        "https://foodautomation-frontend.azurewebsites.net",
+                        "https://foodautomation-flow.azurewebsites.net")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }

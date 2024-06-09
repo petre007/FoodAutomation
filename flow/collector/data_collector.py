@@ -1,15 +1,14 @@
-import base64
 import threading
 import requests
 import json
 from confluent_kafka import Producer
 
-conf = {'bootstrap.servers': 'localhost:9093',
+conf = {'bootstrap.servers': '51.107.12.112:80',
         'broker.address.family': 'v4',
         "default.topic.config": {"auto.offset.reset": "earliest"},
         'group.id': 'ULTRASONIC'}
 
-get_data_url = "http://localhost:8080/robot/data"
+get_data_url = "https://foodautomation-webapp.azurewebsites.net"
 
 
 class DataCollector:
