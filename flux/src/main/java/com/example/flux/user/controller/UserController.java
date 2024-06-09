@@ -40,9 +40,9 @@ public class UserController {
 
     @PostMapping("/add")
     public ResponseEntity<String> addUser(@RequestHeader String token,
-                                          @RequestBody UserModel userModel)
+                                          @RequestBody AddUserReqBody addUserReqBody)
             throws NoGrantedAuthorityException {
-        this.userService.addUser(token, userModel);
+        this.userService.addUser(token, addUserReqBody.getUserModel(), addUserReqBody.getRoomName());
         return ResponseEntity.ok("User has been added");
     }
 }

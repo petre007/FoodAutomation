@@ -1,5 +1,5 @@
 export const environment = {
-    apiUrl: 'https://foodautomation-webapp.azurewebsites.net',
+    apiUrl: 'http://localhost:8080',
     loginEnpoint: '/api/auth/login',
     getAllFoods: '/food/get_all_foods',
     getAllOrders: '/delivery/get_all',

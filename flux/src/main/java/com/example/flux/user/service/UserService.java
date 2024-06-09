@@ -1,5 +1,7 @@
 package com.example.flux.user.service;
 
+import com.example.flux.room.model.RoomEntity;
+import com.example.flux.room.repository.RoomRepository;
 import com.example.flux.security.config.JwtService;
 import com.example.flux.security.exception.NoGrantedAuthorityException;
 import com.example.flux.user.model.Roles;
@@ -17,6 +19,7 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final RoomRepository roomRepository;
     private final JwtService jwtService;
 
 
@@ -34,9 +37,15 @@ public class UserService {
     }
 
     @Transactional
-    public void addUser(String token, UserModel userModel)
+    public void addUser(String token, UserModel userModel, String roomName)
             throws NoGrantedAuthorityException {
         this.jwtService.checkRole(token, Roles.ROLE_ADMIN);
+        RoomEntity roomEntity = RoomEntity.builder()
+                .roomName(roomName)
+                .isEmpty(true)
+                .build();
+        this.roomRepository.save(roomEntity);
+        userModel.setRoomEntity(roomEntity);
         this.userRepository.save(userModel);
     }
 

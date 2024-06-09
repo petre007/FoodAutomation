@@ -22,11 +22,14 @@ export class UsersService {
     return this.http.get<UserInfo[]>(environment.apiUrl+environment.getAllUsers, this.httpOptions);
   }
 
-  public addUser(username: string, password: string, role: string): void {
+  public addUser(username: string, password: string, role: string, room: string): void {
     const addUserBody = {
-      username: username,
-      password: password,
-      role: role
+      userModel:{
+        username: username,
+        password: password,
+        role: role
+      },
+      roomName: room
     }
     this.http
     .post(environment.apiUrl+environment.addUser, JSON.stringify(addUserBody), this.httpOptions)

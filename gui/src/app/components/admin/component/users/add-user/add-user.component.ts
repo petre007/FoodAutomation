@@ -10,7 +10,7 @@ export class AddUserComponent {
 
   constructor(private userService: UsersService) {}
 
-  addUser(username: string, password: string, role: string): void {
-    this.userService.addUser(username, password, role);
+  addUser(username: string, password: string, role: string, room: string): void {
+    this.userService.addUser(username, password, role, room);
   }
 }
