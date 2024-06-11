@@ -1,4 +1,4 @@
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        // PWM control pin
+// PWM control pin
 #define PWM1_PIN            5
 #define PWM2_PIN            6      
 // 74HCT595N Chip pins
@@ -6,10 +6,10 @@
 #define EN_PIN              7                               // Can make control
 #define DATA_PIN            8                               // Serial data
 #define STCP_PIN            4                               // Memory register clock                  
-#define GO_FORWARD 1
-#define GO_BACKWARD 2
+#define GO_FORWARD 0
+#define GO_BACKWARD 1
 #define GO_LEFT 3
-#define GO_RIGHT 4
+#define GO_RIGHT 2
 
 String command = "no_command";
 
@@ -99,7 +99,10 @@ void Ultrasonic_Sensor_Module()
 
 void Move() 
 {
-  command = Serial.readString();
+  command = Serial.readStringUntil('\n');
+  if (command.length() == 0) {
+    command = 5;  
+  }
 
   switch(command.toInt()) {
 
@@ -119,12 +122,16 @@ void Move()
     {
      Serial.println("GO_LEFT command taken");
      Rotate_Left(100);
+     delay(1000);
+     Move_Forward(100);
      delay(50);
     }break;
     case GO_RIGHT:
     {
      Serial.println("GO_RIGHT command taken");
      Rotate_Right(100);
+     delay(1000);
+     Move_Forward(100);
      delay(50);
     }break;
     default:{

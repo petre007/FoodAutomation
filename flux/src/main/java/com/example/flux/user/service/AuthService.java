@@ -42,6 +42,13 @@ public class AuthService {
                     .isEmpty(false)
                     .build());
         }
+        userModel.setRoomEntity(
+                RoomEntity.builder()
+                        .roomName(RoomUtils.getEmployeeRoom())
+                        .isEmpty(false)
+                        .roomName(register.getRoomName())
+                        .build()
+        );
         userRepository.save(userModel);
         var jwtToken = jwtService.generateToken(userModel);
         return AuthenticationResponse.builder()

@@ -1,5 +1,8 @@
 package com.example.flux.robot.service;
 
+import com.example.flux.connector.service.FlowService;
+import com.example.flux.connector.service.HttpMethodsEnum;
+import com.example.flux.connector.utils.FlowUtils;
 import com.example.flux.robot.model.ESP32Data;
 import com.example.flux.robot.model.OutputData;
 import com.example.flux.robot.model.OutputDataType;
@@ -33,6 +36,7 @@ public class RobotService {
     private final ESP32Repository esp32Repository;
     private final OutputRepository outputRepository;
     private final JwtService jwtService;
+    private final FlowService flowService;
 
     public RobotEntity getRobotEntityById(Integer id) {
         return this.robotsRepository.getReferenceById(id);
@@ -125,5 +129,11 @@ public class RobotService {
         robotData.put("esp32_data", this.getDataFromESP32(id));
         robotData.put("output_data", this.getDataFromOutputCommands(id));
         return robotData;
+    }
+
+    public void startRlModel(String token)
+            throws NoGrantedAuthorityException {
+        this.jwtService.checkRole(token, Roles.ROLE_ADMIN);
+        this.flowService.callEndpoint(FlowUtils.FLOW_RL_MODEL_TRAIN, null, HttpMethodsEnum.GET);
     }
 }

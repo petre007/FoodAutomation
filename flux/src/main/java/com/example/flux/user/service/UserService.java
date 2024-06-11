@@ -4,6 +4,7 @@ import com.example.flux.room.model.RoomEntity;
 import com.example.flux.room.repository.RoomRepository;
 import com.example.flux.security.config.JwtService;
 import com.example.flux.security.exception.NoGrantedAuthorityException;
+import com.example.flux.user.controller.RegisterRequest;
 import com.example.flux.user.model.Roles;
 import com.example.flux.user.model.UserModel;
 import com.example.flux.user.repository.UserInfo;
@@ -21,6 +22,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
     private final JwtService jwtService;
+    private final AuthService authService;
 
 
     public List<UserInfo> getAllUsers(String token)
@@ -45,8 +47,12 @@ public class UserService {
                 .isEmpty(true)
                 .build();
         this.roomRepository.save(roomEntity);
-        userModel.setRoomEntity(roomEntity);
-        this.userRepository.save(userModel);
+        this.authService.register(RegisterRequest.builder()
+                .username(userModel.getUsername())
+                .password(userModel.getPassword())
+                .roles(userModel.getRole())
+                .build());
+
     }
 
 }

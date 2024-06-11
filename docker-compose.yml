@@ -1,22 +1,6 @@
 version: "3.7"
 services:
 
-  flow:
-    restart: always
-    image: petredocker007/flow-app:latest
-    ports:
-      - "5000:5000"
-    depends_on:
-      - flux
-
-  flux:
-    restart: always
-    image: petredocker007/flux-app:latest
-    ports:
-      - "80:8080"
-    depends_on:
-      - kafka
-
   zookeeper:
     restart: always
     image: docker.io/bitnami/zookeeper:3.8

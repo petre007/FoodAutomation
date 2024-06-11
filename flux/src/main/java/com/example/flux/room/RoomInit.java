@@ -26,10 +26,6 @@ public class RoomInit {
                 .roomName(RoomUtils.getEmployeeRoom())
                 .isEmpty(false)
                 .build());
-        this.roomRepository.save(RoomEntity.builder()
-                .roomName("ROOM1")
-                .isEmpty(true)
-                .build());
 
     }
 

@@ -1,6 +1,5 @@
 package com.example.flux.user.controller;
 
-import com.example.flux.room.model.RoomEntity;
 import com.example.flux.user.model.Roles;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,5 +15,6 @@ public class RegisterRequest {
     private String username;
     private String password;
     private Roles roles;
+    private String roomName;
 
 }

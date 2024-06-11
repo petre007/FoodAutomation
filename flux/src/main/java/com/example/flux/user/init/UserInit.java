@@ -1,35 +1,36 @@
 package com.example.flux.user.init;
 
-import com.example.flux.room.repository.RoomRepository;
+import com.example.flux.room.utils.RoomUtils;
+import com.example.flux.user.controller.RegisterRequest;
 import com.example.flux.user.model.Roles;
-import com.example.flux.user.model.UserModel;
-import com.example.flux.user.repository.UserRepository;
+import com.example.flux.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class UserInit{
+public class UserInit {
 
-    private final UserRepository userRepository;
+    private final AuthService authService;
 
     @Bean
     public void init2() {
-        this.userRepository.save(UserModel.builder()
+        this.authService.register(RegisterRequest.builder()
                 .username("petre")
                 .password("petre")
-                .role(Roles.ROLE_ADMIN)
+                .roles(Roles.ROLE_ADMIN)
                 .build());
-        this.userRepository.save(UserModel.builder()
-                .username("rebeca")
-                .password("rebeca")
-                .role(Roles.ROLE_CLIENT)
-                .build());
-        this.userRepository.save(UserModel.builder()
+        this.authService.register(RegisterRequest.builder()
                 .username("mihai")
                 .password("mihai")
-                .role(Roles.ROLE_EMPLOYEE)
+                .roles(Roles.ROLE_EMPLOYEE)
+                .build());
+        this.authService.register(RegisterRequest.builder()
+                .username("rebeca")
+                .password("rebeca")
+                .roles(Roles.ROLE_CLIENT)
+                .roomName("ROOM1")
                 .build());
     }
 
