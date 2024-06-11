@@ -9,10 +9,10 @@ os.environ["KERAS_BACKEND"] = "tensorflow"
 
 import numpy as np
 
-conf = {'bootstrap.servers': 'localhost:9093',
+conf = {'bootstrap.servers': '51.107.12.112:80',
         'broker.address.family': 'v4',
         "default.topic.config": {"auto.offset.reset": "earliest"},
-        'group.id': 'ULTRASONIC'}
+        'group.id': 'FLOW-GROUPID'}
 
 
 def rl_model_train():
@@ -20,11 +20,15 @@ def rl_model_train():
     env = RobotEnv()
     env.is_training = True
 
-    state_size = env.observation_space.n
-    action_size = env.action_space.n
-    Q_table = np.zeros((state_size, action_size))
+    try:
+        Q_table = env.load()
+    except:
+        state_size = env.observation_space.n
+        action_size = env.action_space.n
+        Q_table = np.zeros((state_size, action_size))
+
     # number of episode we will run
-    n_episodes = 1  # collect 1000 elements fo r each input (ultrasonic and esp32)
+    n_episodes = 1
 
     # maximum of iteration per episode
     max_iter_episode = 20

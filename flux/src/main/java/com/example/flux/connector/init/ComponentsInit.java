@@ -17,8 +17,8 @@ public class ComponentsInit {
     public void initComponents() {
         this.componentsRepository.save(ComponentsEntity.builder()
                 .name("flow")
-                .address("localhost")
-                .port("https://foodautomation-flow.azurewebsites.net/")
+                .address("https://foodautomation-flow.azurewebsites.net")
+                .port("80")
                 .build());
     }
 
