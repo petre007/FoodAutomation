@@ -1,7 +1,7 @@
 from flask import Flask
 
 from collector.data_collector import DataCollector
-from brain.rl_model import rl_model
+from brain.rl_model import rl_model, rl_model_train
 from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
@@ -29,6 +29,14 @@ def create_connexion():  # put application's code here
 def start_rl_model():
     print("start_rl_model called")
     rl_model()
+
+
+@app.route('/rl_model_train', methods=['GET'])
+@cross_origin()
+def start_rl_model_train():
+    print("start_rl_model_train called")
+    rl_model_train()
+    return "Started training rl model"
 
 
 if __name__ == '__main__':

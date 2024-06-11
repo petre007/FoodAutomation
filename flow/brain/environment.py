@@ -67,9 +67,12 @@ class CustomLayout(object):
         self._create_layout([800, 350], [999, 350], 'O')
 
     def generate_targets(self):
-        self._create_layout([750, 150], [799, 150], 'T')
-        self._create_layout([750, 150], [750, 200], 'T')
-        self._create_layout([750, 200], [799, 200], 'T')
+        # self._create_layout([750, 150], [799, 150], 'T')
+        # self._create_layout([750, 150], [750, 200], 'T')
+        # self._create_layout([750, 200], [799, 200], 'T')
+        for x in range(100, 150):
+            for y in range(150, 200):
+                self.targets.append([x, y])
 
 
 class RobotEnv(gym.Env):
@@ -88,17 +91,18 @@ class RobotEnv(gym.Env):
         # Initialize robot's position and sensors
         self.custom_layout.robot_position = [100, 800]  # Robot's initial position (x, y)
         # Target positions (x, y)
-        self.custom_layout.targets = [600, 300]  # AprilTag position (x, y)
+        self.custom_layout.generate_targets()  # AprilTag position (x, y)
         # Obstacles positions
         self.custom_layout.generate_obstacles()
-        # Detection of apriltag
+        # Initial orientation
+        self.orientation = 0;
 
     def reset(self, **kwargs):
-        if self.is_training:
-            if len(self.data_collector.ultrasonic_data) != 1000:
-                self.data_collector.get_data()
-            # Reset robot's position
-            self.index = 0
+        # if self.is_training:
+        #     if len(self.data_collector.ultrasonic_data) != 1000:
+        #         self.data_collector.get_data()
+        #     # Reset robot's position
+        #     self.index = 0
         self.custom_layout.robot_position = [100, 800]
         return self._get_observation()
 
@@ -110,14 +114,49 @@ class RobotEnv(gym.Env):
 
     def step(self, action):
         # Update robot's position based on action
+        # Update robot's position and orientation based on action
         if action == 0:  # Move forward
-            self.custom_layout.robot_position[1] += 15
+            if self.orientation == 0:  # Facing up
+                self.custom_layout.robot_position[1] -= 50
+            elif self.orientation == 1:  # Facing right
+                self.custom_layout.robot_position[0] += 50
+            elif self.orientation == 2:  # Facing down
+                self.custom_layout.robot_position[1] += 50
+            elif self.orientation == 3:  # Facing left
+                self.custom_layout.robot_position[0] -= 50
         elif action == 1:  # Move backward
-            self.custom_layout.robot_position[1] -= 15
-        elif action == 2:  # Move left
-            self.custom_layout.robot_position[0] -= 15
-        elif action == 3:  # Move right
-            self.custom_layout.robot_position[0] += 15
+            if self.orientation == 0:  # Facing up
+                self.custom_layout.robot_position[1] += 50
+            elif self.orientation == 1:  # Facing right
+                self.custom_layout.robot_position[0] -= 50
+            elif self.orientation == 2:  # Facing down
+                self.custom_layout.robot_position[1] -= 50
+            elif self.orientation == 3:  # Facing left
+                self.custom_layout.robot_position[0] += 50
+        elif action == 2:  # Turn left
+            # Move left in the matrix
+            if self.orientation == 0:
+                self.custom_layout.robot_position[0] -= 50
+            elif self.orientation == 1:
+                self.custom_layout.robot_position[1] -= 50
+            elif self.orientation == 2:
+                self.custom_layout.robot_position[0] += 50
+            elif self.orientation == 3:
+                self.custom_layout.robot_position[1] += 50
+            # Update orientation
+            self.orientation = (self.orientation - 1) % 4
+        elif action == 3:  # Turn right
+            # Move right in the matrix
+            if self.orientation == 0:
+                self.custom_layout.robot_position[0] += 50
+            elif self.orientation == 1:
+                self.custom_layout.robot_position[1] += 50
+            elif self.orientation == 2:
+                self.custom_layout.robot_position[0] -= 50
+            elif self.orientation == 3:
+                self.custom_layout.robot_position[1] -= 50
+            # Update orientation
+            self.orientation = (self.orientation + 1) % 4
 
         self.custom_layout.robot_position[0] = min(max(self.custom_layout.robot_position[0], 0), 1000)
         self.custom_layout.robot_position[1] = min(max(self.custom_layout.robot_position[1], 0), 1000)
@@ -129,11 +168,11 @@ class RobotEnv(gym.Env):
             # Check if robot has collided with an obstacle or with the layout
             reward = 0
             if self.custom_layout.obstacle_detected or min(self._get_min_distance_from_layout_obstacles()) < 15:
-                reward -= -1
+                reward -= -100
 
             # Check if robot has reached AprilTag
             reached_target = False
-            if np.array_equal(self.custom_layout.robot_position, self.custom_layout.targets):
+            if self.custom_layout.robot_position in self.custom_layout.targets:
                 reached_target = True
                 reward += 10  # Positive reward for reaching AprilTag
 
@@ -147,25 +186,25 @@ class RobotEnv(gym.Env):
 
     def _get_observation(self):
         try:
-            # Use actual data from ultrasonic to avoid dynamic obstacles
-
-            if self.data_collector.ultrasonic_data[self.index] <= 15:
-                self.custom_layout.obstacle_detected = True
-            else:
-                self.custom_layout.obstacle_detected = False
-
-            # Use the actual robot to retrieve and compare if he got to see an actual apriltag
-
-            image_decoded = decode_image_from_esp32(self.data_collector.esp32_data[self.index])
-            try:
-                if len(Detector().detect(image_decoded)) != 0:
-                    self.custom_layout.apriltag_detected = True
-                else:
-                    self.custom_layout.apriltag_detected = False
-            except:
-                self.custom_layout.apriltag_detected = False
-
-            self.index = self.index + 1
+            # # Use actual data from ultrasonic to avoid dynamic obstacles
+            #
+            # if self.data_collector.ultrasonic_data[self.index] <= 15:
+            #     self.custom_layout.obstacle_detected = True
+            # else:
+            #     self.custom_layout.obstacle_detected = False
+            #
+            # # Use the actual robot to retrieve and compare if he got to see an actual apriltag
+            #
+            # image_decoded = decode_image_from_esp32(self.data_collector.esp32_data[self.index])
+            # try:
+            #     if len(Detector().detect(image_decoded)) != 0:
+            #         self.custom_layout.apriltag_detected = True
+            #     else:
+            #         self.custom_layout.apriltag_detected = False
+            # except:
+            #     self.custom_layout.apriltag_detected = False
+            #
+            # self.index = self.index + 1
 
             return self.custom_layout.robot_position
         except:

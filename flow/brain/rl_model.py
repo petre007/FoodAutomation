@@ -24,10 +24,10 @@ def rl_model_train():
     action_size = env.action_space.n
     Q_table = np.zeros((state_size, action_size))
     # number of episode we will run
-    n_episodes = 1000  # collect 1000 elements for each input (ultrasonic and esp32)
+    n_episodes = 1  # collect 1000 elements fo r each input (ultrasonic and esp32)
 
     # maximum of iteration per episode
-    max_iter_episode = 100
+    max_iter_episode = 20
 
     # initialize the exploration probability to 1
     exploration_proba = 1
@@ -57,8 +57,8 @@ def rl_model_train():
 
         for i in range(max_iter_episode):
             # we sample a float from a uniform distribution over 0 and 1
-            # if the sampled flaot is less than the exploration proba
-            #     the agent selects arandom action
+            # if the sampled float is less than the exploration proba
+            #     the agent selects a random action
             # else
             #     he exploits his knowledge using the bellman equation
 
@@ -71,10 +71,10 @@ def rl_model_train():
 
             # The environment runs the chosen action and returns
             # the next state, a reward and true if the episod is ended.
-            print(env.step(action))
             next_state, reward, done = env.step(action)
-            print(action)
-            print(Q_table[current_state, action])
+            print(next_state)
+            print(reward)
+            print(done)
             # We update our Q-table using the Q-learning iteration
             Q_table[current_state, action] = (1 - lr) * Q_table[current_state, action] + lr * (
                     reward + gamma * np.max(Q_table[next_state, :]))
