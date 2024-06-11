@@ -1,0 +1,54 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "sites_foodautomation_flow_name": {
+            "value": null
+        },
+        "sites_foodautomation_webapp_name": {
+            "value": null
+        },
+        "sites_foodautomation_frontend_name": {
+            "value": null
+        },
+        "virtualNetworks_FoodAutNet_name": {
+            "value": null
+        },
+        "components_foodautomation_logs_name": {
+            "value": null
+        },
+        "virtualNetworks_foodautomationnet_name": {
+            "value": null
+        },
+        "virtualMachines_foodautomation_kafka_name": {
+            "value": null
+        },
+        "serverfarms_ASP_FoodAutomationgroup_b22b_name": {
+            "value": null
+        },
+        "sshPublicKeys_foodautomation_kafka_key_name": {
+            "value": null
+        },
+        "flexibleServers_foodautomationmysql_name": {
+            "value": null
+        },
+        "publicIPAddresses_foodautomation_kafka_ip_name": {
+            "value": null
+        },
+        "networkInterfaces_foodautomation_kafka898_z1_name": {
+            "value": null
+        },
+        "networkSecurityGroups_foodautomation_kafka_nsg_name": {
+            "value": null
+        },
+        "actionGroups_Application_Insights_Smart_Detection_name": {
+            "value": null
+        },
+        "privateDnsZones_privatelink_mysql_database_azure_com_name": {
+            "value": null
+        },
+        "workspaces_DefaultWorkspace_ab5a1fb4_a458_4068_a8cd_72e3bd97ce4a_CHN_externalid": {
+            "value": null
+        }
+    }
+}
