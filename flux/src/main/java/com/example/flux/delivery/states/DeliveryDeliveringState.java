@@ -33,8 +33,8 @@ public class DeliveryDeliveringState extends DeliveryStateAbstract implements De
         // sent order to the robot
         orderEntity.setStates(States.DELIVERING);
         this.getOrderRepository().save(orderEntity);
-        kafkaTemplate.send(KafkaUtils.ORDERS_DELIVERING, orderEntity.toString());
-        kafkaTemplate.flush();
+//        kafkaTemplate.send(KafkaUtils.ORDERS_DELIVERING, orderEntity.toString());
+//        kafkaTemplate.flush();
 
         // start robot
         new Thread(() -> {

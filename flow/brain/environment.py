@@ -182,7 +182,7 @@ class RobotEnv(gym.Env):
 
             return observation, reward, reached_target
         else:
-            return self.custom_layout.robot_position
+            return self.custom_layout.robot_position, self.custom_layout.robot_position in self.custom_layout.targets
 
     def _get_observation(self):
         try:

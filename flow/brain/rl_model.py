@@ -103,9 +103,12 @@ def rl_model():
     while not env.is_training:
         print("Robot state: " + str(current_state))
         action = int(np.argmax(Q_table[current_state, :]))
-        next_state = env.step(action)
+        next_state, done = env.step(action)
         current_state = next_state
         print("Robot action: " + str(action))
-        producer.produce("output_from_rl_model", value=str(action))
-        producer.flush()
+        if done:
+            print("Order delivered")
+            break
+        # producer.produce("output_from_rl_model", value=str(action))
+        # producer.flush()
         time.sleep(1)
