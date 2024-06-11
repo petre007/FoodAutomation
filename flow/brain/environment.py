@@ -98,11 +98,11 @@ class RobotEnv(gym.Env):
         self.orientation = 0;
 
     def reset(self, **kwargs):
-        # if self.is_training:
-        #     if len(self.data_collector.ultrasonic_data) != 1000:
-        #         self.data_collector.get_data()
-        #     # Reset robot's position
-        #     self.index = 0
+        if self.is_training:
+            if len(self.data_collector.ultrasonic_data) != 1000:
+                self.data_collector.get_data()
+            # Reset robot's position
+            self.index = 0
         self.custom_layout.robot_position = [100, 800]
         return self._get_observation()
 
@@ -186,25 +186,25 @@ class RobotEnv(gym.Env):
 
     def _get_observation(self):
         try:
-            # # Use actual data from ultrasonic to avoid dynamic obstacles
-            #
-            # if self.data_collector.ultrasonic_data[self.index] <= 15:
-            #     self.custom_layout.obstacle_detected = True
-            # else:
-            #     self.custom_layout.obstacle_detected = False
-            #
-            # # Use the actual robot to retrieve and compare if he got to see an actual apriltag
-            #
-            # image_decoded = decode_image_from_esp32(self.data_collector.esp32_data[self.index])
-            # try:
-            #     if len(Detector().detect(image_decoded)) != 0:
-            #         self.custom_layout.apriltag_detected = True
-            #     else:
-            #         self.custom_layout.apriltag_detected = False
-            # except:
-            #     self.custom_layout.apriltag_detected = False
-            #
-            # self.index = self.index + 1
+            # Use actual data from ultrasonic to avoid dynamic obstacles
+
+            if self.data_collector.ultrasonic_data[self.index] <= 15:
+                self.custom_layout.obstacle_detected = True
+            else:
+                self.custom_layout.obstacle_detected = False
+
+            # Use the actual robot to retrieve and compare if he got to see an actual apriltag
+
+            image_decoded = decode_image_from_esp32(self.data_collector.esp32_data[self.index])
+            try:
+                if len(Detector().detect(image_decoded)) != 0:
+                    self.custom_layout.apriltag_detected = True
+                else:
+                    self.custom_layout.apriltag_detected = False
+            except:
+                self.custom_layout.apriltag_detected = False
+
+            self.index = self.index + 1
 
             return self.custom_layout.robot_position
         except:
