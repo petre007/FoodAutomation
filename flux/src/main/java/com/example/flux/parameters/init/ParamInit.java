@@ -19,6 +19,11 @@ public class ParamInit {
                 .description("Defines how much data it is stored in the database per category")
                 .value("1000")
                 .build());
+        this.parametersRepository.save(ParametersEntity.builder()
+                .name("manual_control")
+                .description("Set this parameter to true for manual control, else the rl model will be used")
+                .value("1")
+                .build());
     }
 
 }

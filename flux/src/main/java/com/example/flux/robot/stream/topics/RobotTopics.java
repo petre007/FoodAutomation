@@ -57,4 +57,12 @@ public class RobotTopics {
                 .build();
     }
 
+    @Bean
+    NewTopic topic7() {
+        return TopicBuilder.name(KafkaUtils.ROBOT_COMMANDS)
+                .partitions(10)
+                .replicas(1)
+                .build();
+    }
+
 }

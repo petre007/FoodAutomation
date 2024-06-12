@@ -9,5 +9,6 @@ export const environment = {
     addUser: "/user/add",
     deleteUser: "/user/delete",
     getUltrasonicDataFromRobot: "/robot/ultrasonic_data",
-    updateDeliveryState: "/delivery/update_state"
+    updateDeliveryState: "/delivery/update_state",
+    startRlModelTraining: "/robot/rl_model_train"
 };

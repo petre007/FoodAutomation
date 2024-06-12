@@ -20,4 +20,11 @@ export class RobotService {
   public getUltrasonicData(id: number): Observable<number[]>{
     return this.http.post<number[]>(environment.apiUrl+environment.getUltrasonicDataFromRobot, JSON.stringify(id), this.httpOptions)
   }
+
+  public startRlModelTraining(): void {
+    this.http.get(environment.apiUrl+environment.startRlModelTraining, this.httpOptions).subscribe(response=>{
+
+    })
+    alert("Begin training model initialized")
+  }
 }

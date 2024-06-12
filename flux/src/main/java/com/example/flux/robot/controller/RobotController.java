@@ -33,7 +33,7 @@ public class RobotController {
         return ResponseEntity.ok(this.robotService.getDataFromUltrasonic(token, id));
     }
 
-    @PostMapping("/rl_model_train")
+    @GetMapping("/rl_model_train")
     public ResponseEntity<String> startTrainRlModel(@RequestHeader String token)
             throws NoGrantedAuthorityException {
         this.robotService.startRlModel(token);

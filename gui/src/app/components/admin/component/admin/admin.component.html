@@ -1,11 +1,28 @@
 <app-navbar></app-navbar>
-<div class="centered-container">
-  <h1 class = "mt-3 mb-3">Statistics</h1>
-  <mat-card class="example-card">
-    <mat-card-content>
-      <div class=".centered-container">
-        <canvasjs-chart [options]="chartOptions" [styles]="{width: '100%', height:'360px'}"></canvasjs-chart>    
-      </div> 
-    </mat-card-content>
-  </mat-card>
-</div>
+  <mat-tab-group>
+    <mat-tab label="Statistics">
+      <div class="centered-container">
+        <h1 class = "mt-3 mb-3">Statistics</h1>
+        <mat-card class="example-card">
+          <mat-card-content>
+            <div class=".centered-container">
+              <canvasjs-chart [options]="chartOptions" [styles]="{width: '100%', height:'360px'}"></canvasjs-chart>    
+            </div> 
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+    <mat-tab label="Reinforcement learning model"> 
+      <div class="centered-container">
+        <h1 class = "mt-3 mb-3">Reinforcement learning model</h1>
+        <mat-card class="example-card">
+          <mat-card-content>
+            <p>In this section, you have the possibility to train the Q-learning model 
+              for the robot based on the data collected from the environment.</p>
+            <p>In order for you to complete this operation, press the bellow button to start the training.</p>
+          </mat-card-content>
+        </mat-card>
+        <button mat-flat-button color="accent" (click)="startRlModelTraining()">Begin training</button>
+      </div>
+    </mat-tab>
+  </mat-tab-group>

@@ -5,7 +5,8 @@ public class KafkaUtils {
     // Group Id
     public static final String GROUP_ID_ULTRASONIC = "ULTRASONIC";
     public static final String GROUP_ID_ESP32 = "ESP32";
-    public static final String GROUP_ID_OUTPUT = "OUTPUT";
+    public static final String GROUP_ID_OUTPUT = "OUTPUT_MANUAL";
+    public static final String GROUP_ID_OUTPUT_FLOW = "OUTPUT_FLOW";
 
     // Topics where flux consumes data
     public static final String ULTRASONIC_DATA_CONSUMER = "data_from_ultrasonic";
@@ -17,5 +18,6 @@ public class KafkaUtils {
     public static final String ULTRASONIC_DATA_PRODUCER = "collected_data_from_ultrasonic";
     public static final String ESP32_DATA_PRODUCER = "collected_data_from_esp32";
     public static final String ORDERS_DELIVERING = "orders_delivering";
+    public static final String ROBOT_COMMANDS = "robot_commands";
 
 }

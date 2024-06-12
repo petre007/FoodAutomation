@@ -6,7 +6,7 @@ from confluent_kafka import Producer
 conf = {'bootstrap.servers': '51.107.12.112:80',
         'broker.address.family': 'v4',
         "default.topic.config": {"auto.offset.reset": "earliest"},
-        'group.id': 'ULTRASONIC'}
+        'group.id': 'FLOW_DATA_COLLECTOR'}
 
 get_data_url = "https://foodautomation-webapp.azurewebsites.net/robot/get_data"
 
@@ -27,6 +27,7 @@ class DataCollector:
         self.ultrasonic_data = []
         self.esp32_data = []
         self.orders_data = []
+        self.output_data = []
 
     def _create_producer(self):
         if self.producer is None:
@@ -38,6 +39,7 @@ class DataCollector:
         data = json.loads(response.content)
         self.ultrasonic_data = data["ultrasonic_data"]
         self.esp32_data = data["esp32_data"]
+        self.output_data = data["output_data"]
 
     def send_command(self, command):
         self.producer = self._create_producer()

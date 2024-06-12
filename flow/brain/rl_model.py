@@ -3,13 +3,12 @@ import time
 
 from brain.environment import RobotEnv
 from confluent_kafka import Producer
-from collector.data_collector import DataCollector
 
 os.environ["KERAS_BACKEND"] = "tensorflow"
 
 import numpy as np
 
-conf = {'bootstrap.servers': '51.107.12.112:80',
+conf = {'bootstrap.servers': 'localhost:9093',
         'broker.address.family': 'v4',
         "default.topic.config": {"auto.offset.reset": "earliest"},
         'group.id': 'FLOW-GROUPID'}
@@ -27,11 +26,17 @@ def rl_model_train():
         action_size = env.action_space.n
         Q_table = np.zeros((state_size, action_size))
 
+    actions = env.data_collector.output_data
+
+    if len(actions) == 0:
+        print("Not enough data to begin training the model")
+        return
+
     # number of episode we will run
     n_episodes = 1
 
     # maximum of iteration per episode
-    max_iter_episode = 20
+    max_iter_episode = len(actions)
 
     # initialize the exploration probability to 1
     exploration_proba = 1
@@ -66,12 +71,14 @@ def rl_model_train():
             # else
             #     he exploits his knowledge using the bellman equation
 
-            if np.random.uniform(0, 1) < exploration_proba:
-                print("action here")
-                action = env.action_space.sample()
-            else:
-                print("action there")
-                action = np.argmax(Q_table[current_state, :])
+            # if np.random.uniform(0, 1) < exploration_proba:
+            #     print("action here")
+            #     action = env.action_space.sample()
+            # else:
+            #     print("action there")
+            #     action = np.argmax(Q_table[current_state, :])
+
+            action = actions[i]
 
             # The environment runs the chosen action and returns
             # the next state, a reward and true if the episod is ended.
@@ -113,6 +120,6 @@ def rl_model():
         if done:
             print("Order delivered")
             break
-        # producer.produce("output_from_rl_model", value=str(action))
-        # producer.flush()
+        producer.produce("output_from_rl_model", value=str(action))
+        producer.flush()
         time.sleep(1)
