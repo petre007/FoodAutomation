@@ -35,3 +35,4 @@ build/
 ### Pycharm ###
 __pycache__
 /.idea
+/q_table.npy

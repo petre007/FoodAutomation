@@ -1,0 +1,25 @@
+<app-navbar></app-navbar>
+<button mat-flat-button color="primary" (click)="updateRobot()">Save</button>
+<table class="table">
+
+    <thead>
+        <tr>
+            <th>URL</th>
+            <th>Port</th>
+            <th>State</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr *ngFor = "let tempRobot of robots">
+            <td> 
+                <input type="text" [(ngModel)]="tempRobot.connexionString" />
+            </td>
+            <td>
+                <input type="text" [(ngModel)]="tempRobot.connexionPort" />
+            </td>
+            <td>{{tempRobot.connexions}}</td>
+        </tr>
+    </tbody>
+
+</table>

@@ -1,4 +1,4 @@
-// PWM control pin
+  // PWM control pin
 #define PWM1_PIN            5
 #define PWM2_PIN            6      
 // 74HCT595N Chip pins
@@ -12,6 +12,8 @@
 #define GO_RIGHT 2
 
 String command = "no_command";
+
+const int MAX_RPM = 3000; // Example maximum RPM for the motor
 
 //const int Forward       = 92;                               // forward
 //const int Backward      = 163;                              // back
@@ -31,7 +33,7 @@ void Move_Forward(int speed) //Define the forward function of the input speed
   digitalWrite(2,HIGH); //D2 digital I/O port controls the direction of the motor of interface A
   analogWrite(5,speed); //D5 digital I/O port outputs PWM signal to control the speed of the motor of port A.
   digitalWrite(4,LOW);//D4 digital I/O port controls the direction of the motor of interface B
-  analogWrite(6,speed);//D6 digital I/O port outputs PWM signal to control the speed of interface B motor.
+  analogWrite(6,speed);//D6 digital I/O port outputs PWM signal to control the speed of interface B motor
 }
 
 void Rotate_Left(int speed) //Define the left rotation function of the input speed
@@ -78,6 +80,8 @@ float checkdistance()
     return distance;
 }
 
+  
+
 void Ultrasonic_Sensor_Module()
 {
     int Distance = 0; 
@@ -108,19 +112,19 @@ void Move()
 
     case GO_FORWARD:
     {
-     Serial.println("GO_FORWARD command taken");
-     Move_Forward(100);
-     delay(50);
+     Ultrasonic_Sensor_Module();
+     Move_Forward(70);
+     delay(100);
     }break;
     case GO_BACKWARD:
     {
-     Serial.println("GO_BACKWARD command taken");
+     Ultrasonic_Sensor_Module(); 
      Move_Backward(100);
      delay(50);    
     }break;
     case GO_LEFT:
     {
-     Serial.println("GO_LEFT command taken");
+     Ultrasonic_Sensor_Module(); 
      Rotate_Left(100);
      delay(1000);
      Move_Forward(100);
@@ -128,7 +132,7 @@ void Move()
     }break;
     case GO_RIGHT:
     {
-     Serial.println("GO_RIGHT command taken");
+     Ultrasonic_Sensor_Module(); 
      Rotate_Right(100);
      delay(1000);
      Move_Forward(100);
@@ -137,7 +141,6 @@ void Move()
     default:{
         Stop();
         command = "no_command";
-        Serial.println("No command taken");
     }break;
   }
 }
@@ -163,7 +166,7 @@ void setup()
 }
 void loop()
 {
-    Move();
-    Ultrasonic_Sensor_Module();
-    
+
+  Move();
+
 }

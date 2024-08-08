@@ -38,9 +38,6 @@ public class RobotEntity {
     @Column(name = "connexion_string")
     private String connexionString;
 
-    @Column(name = "serial_port")
-    private String serialPort;
-
     @Column(name = "connexion_port")
     private String connexionPort;
 

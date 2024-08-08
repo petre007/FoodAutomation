@@ -70,7 +70,7 @@ class CustomLayout(object):
         # self._create_layout([750, 150], [799, 150], 'T')
         # self._create_layout([750, 150], [750, 200], 'T')
         # self._create_layout([750, 200], [799, 200], 'T')
-        for x in range(100, 150):
+        for x in range(750, 799):
             for y in range(150, 200):
                 self.targets.append([x, y])
 
@@ -82,10 +82,11 @@ class RobotEnv(gym.Env):
         self.is_training = True
         # Collect data
         self.data_collector = DataCollector()
+        self.data_collector.get_data()
         self.index = 0
         # Define action and observation space
         self.custom_layout = CustomLayout(1000, 1000)
-        self.action_space = spaces.Discrete(4)  # Four discrete actions: forward, backward, left, right
+        self.action_space = spaces.Discrete(4)  # Four discrete actions: forward, backward, left, right, orientation
         self.observation_space = spaces.MultiBinary(
             self.custom_layout.length * self.custom_layout.height)  # Four ultrasonic sensor readings + AprilTag detection
         # Initialize robot's position and sensors
@@ -95,7 +96,7 @@ class RobotEnv(gym.Env):
         # Obstacles positions
         self.custom_layout.generate_obstacles()
         # Initial orientation
-        self.orientation = 0;
+        self.orientation = 0
 
     def reset(self, **kwargs):
         if self.is_training:
@@ -113,13 +114,12 @@ class RobotEnv(gym.Env):
         return distances
 
     def step(self, action):
-        # Update robot's position based on action
         # Update robot's position and orientation based on action
         if action == 0:  # Move forward
             if self.orientation == 0:  # Facing up
-                self.custom_layout.robot_position[1] -= 50
+                self.custom_layout.robot_position[1] -= 69
             elif self.orientation == 1:  # Facing right
-                self.custom_layout.robot_position[0] += 50
+                self.custom_layout.robot_position[0] += 100
             elif self.orientation == 2:  # Facing down
                 self.custom_layout.robot_position[1] += 50
             elif self.orientation == 3:  # Facing left
@@ -133,19 +133,7 @@ class RobotEnv(gym.Env):
                 self.custom_layout.robot_position[1] -= 50
             elif self.orientation == 3:  # Facing left
                 self.custom_layout.robot_position[0] += 50
-        elif action == 2:  # Turn left
-            # Move left in the matrix
-            if self.orientation == 0:
-                self.custom_layout.robot_position[0] -= 50
-            elif self.orientation == 1:
-                self.custom_layout.robot_position[1] -= 50
-            elif self.orientation == 2:
-                self.custom_layout.robot_position[0] += 50
-            elif self.orientation == 3:
-                self.custom_layout.robot_position[1] += 50
-            # Update orientation
-            self.orientation = (self.orientation - 1) % 4
-        elif action == 3:  # Turn right
+        elif action == 2:  # Turn right
             # Move right in the matrix
             if self.orientation == 0:
                 self.custom_layout.robot_position[0] += 50
@@ -157,6 +145,18 @@ class RobotEnv(gym.Env):
                 self.custom_layout.robot_position[1] -= 50
             # Update orientation
             self.orientation = (self.orientation + 1) % 4
+        elif action == 3:  # Turn left
+            # Move left in the matrix
+            if self.orientation == 0:
+                self.custom_layout.robot_position[0] -= 50
+            elif self.orientation == 1:
+                self.custom_layout.robot_position[1] -= 50
+            elif self.orientation == 2:
+                self.custom_layout.robot_position[0] += 50
+            elif self.orientation == 3:
+                self.custom_layout.robot_position[1] += 50
+            # Update orientation
+            self.orientation = (self.orientation - 1) % 4
 
         self.custom_layout.robot_position[0] = min(max(self.custom_layout.robot_position[0], 0), 1000)
         self.custom_layout.robot_position[1] = min(max(self.custom_layout.robot_position[1], 0), 1000)
@@ -166,7 +166,8 @@ class RobotEnv(gym.Env):
             observation = self._get_observation()
 
             # Check if robot has collided with an obstacle or with the layout
-            reward = 0
+            reward = 1
+
             if self.custom_layout.obstacle_detected or min(self._get_min_distance_from_layout_obstacles()) < 15:
                 reward -= -100
 
@@ -174,11 +175,11 @@ class RobotEnv(gym.Env):
             reached_target = False
             if self.custom_layout.robot_position in self.custom_layout.targets:
                 reached_target = True
-                reward += 10  # Positive reward for reaching AprilTag
+                reward += 100  # Positive reward for reaching AprilTag
 
             # Check if robot detected AprilTag
             if self.custom_layout.apriltag_detected:
-                reward += 5
+                reward += 20
 
             return observation, reward, reached_target
         else:
@@ -197,7 +198,14 @@ class RobotEnv(gym.Env):
 
             image_decoded = decode_image_from_esp32(self.data_collector.esp32_data[self.index])
             try:
-                if len(Detector().detect(image_decoded)) != 0:
+                at_detector = Detector(
+                    families="tag25h9",
+                    nthreads=1,
+                    quad_decimate=1.0,
+                    quad_sigma=0.0,
+                    refine_edges=1,
+                    decode_sharpening=0.25,)
+                if len(at_detector.detect(image_decoded)) != 0:
                     self.custom_layout.apriltag_detected = True
                 else:
                     self.custom_layout.apriltag_detected = False

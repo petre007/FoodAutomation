@@ -27,6 +27,7 @@ import { AddUserComponent } from './components/admin/component/users/add-user/ad
 import { UserFormComponent } from './components/admin/component/users/user-form/user-form.component';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatSelectModule} from '@angular/material/select';
+import { RobotComponent } from './components/robot/robot.component';
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import {MatSelectModule} from '@angular/material/select';
     ConfigComponent,
     UsersComponent,
     AddUserComponent,
-    UserFormComponent
+    UserFormComponent,
+    RobotComponent
   ],
   imports: [
     BrowserModule,

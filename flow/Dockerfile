@@ -12,7 +12,6 @@ RUN pip install --upgrade setuptools wheel
 
 # Install dependencies
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
-RUN pip install pupil-apriltags
 RUN pip install -U flask-cors
 
 # Copy the application source code

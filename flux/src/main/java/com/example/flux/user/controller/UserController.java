@@ -1,7 +1,7 @@
 package com.example.flux.user.controller;
 
 import com.example.flux.security.exception.NoGrantedAuthorityException;
-import com.example.flux.user.model.UserModel;
+
 import com.example.flux.user.repository.UserInfo;
 import com.example.flux.user.service.UserService;
 import lombok.RequiredArgsConstructor;

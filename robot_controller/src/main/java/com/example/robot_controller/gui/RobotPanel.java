@@ -5,7 +5,6 @@ import com.example.robot_controller.commands.RobotMoveBackward;
 import com.example.robot_controller.commands.RobotMoveForward;
 import com.example.robot_controller.commands.RobotMoveLeft;
 import com.example.robot_controller.commands.RobotMoveRight;
-import com.example.robot_controller.commands.RobotMoveStop;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -22,7 +21,7 @@ import java.io.IOException;
 @Slf4j
 public class RobotPanel extends JFrame {
 
-    private KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     private JPanel panel1;
     private JButton leftButton;
@@ -47,12 +46,6 @@ public class RobotPanel extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 RobotMakeMove.makeMove(new RobotMoveLeft(kafkaTemplate));
-            }
-        });
-        stopButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                RobotMakeMove.makeMove(new RobotMoveStop(kafkaTemplate));
             }
         });
         rightButton.addActionListener(new ActionListener() {

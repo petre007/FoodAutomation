@@ -1,5 +1,6 @@
 import os
 import time
+import copy
 
 from brain.environment import RobotEnv
 from confluent_kafka import Producer
@@ -48,10 +49,10 @@ def rl_model_train():
     min_exploration_proba = 0.01
 
     # discounted factor
-    gamma = 0.99
+    gamma = 1
 
     # learning rate
-    lr = 0.1
+    lr = 1
 
     # we iterate over episodes
     for e in range(n_episodes):
@@ -77,19 +78,31 @@ def rl_model_train():
             # else:
             #     print("action there")
             #     action = np.argmax(Q_table[current_state, :])
+            prev_state = copy.deepcopy(current_state)
 
             action = actions[i]
 
             # The environment runs the chosen action and returns
-            # the next state, a reward and true if the episod is ended.
+            # the next state, a reward and true if the episode is ended.
             next_state, reward, done = env.step(action)
-            print(next_state)
-            print(reward)
-            print(done)
+
+            print("")
+            print("=============")
+            print(prev_state)
+            print(Q_table[prev_state], action)
             # We update our Q-table using the Q-learning iteration
-            Q_table[current_state, action] = (1 - lr) * Q_table[current_state, action] + lr * (
-                    reward + gamma * np.max(Q_table[next_state, :]))
-            total_episode_reward = total_episode_reward + reward
+            prev_state_index = prev_state[0] * 1000 + prev_state[1]
+            next_state_index = next_state[0] * 1000 + next_state[1]
+            Q_table[prev_state_index, action] = (1 - lr) * Q_table[prev_state_index, action] + lr * (
+                    reward + gamma * np.max(Q_table[next_state_index, :]))
+            # Q_table[prev_state, action] = reward
+
+            print("--------")
+            print(next_state)
+            print(Q_table[next_state], action)
+            print("============")
+            print("")
+
             # If the episode is finished, we leave the for loop
             if done:
                 print("The q-table model was created and saved...")
@@ -113,7 +126,8 @@ def rl_model():
     Q_table = env.load()
     while not env.is_training:
         print("Robot state: " + str(current_state))
-        action = int(np.argmax(Q_table[current_state, :]))
+        current_state_index = current_state[0] * 1000 + current_state[1]
+        action = int(np.argmax(Q_table[current_state_index, :]))
         next_state, done = env.step(action)
         current_state = next_state
         print("Robot action: " + str(action))

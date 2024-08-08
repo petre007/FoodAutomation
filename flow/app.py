@@ -32,7 +32,7 @@ def start_rl_model():
     return "start rl_model"
 
 
-@app.route('/rl_model_train', methods=['GET'])
+@app.route('/rl_model_train', methods=['POST'])
 @cross_origin()
 def start_rl_model_train():
     print("start_rl_model_train called")

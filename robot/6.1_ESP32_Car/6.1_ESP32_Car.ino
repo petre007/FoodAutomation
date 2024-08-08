@@ -77,6 +77,8 @@ const char *password = "petrenet01"; // Enter WIFI Password
 extern int gpLed = 4; // Light
 extern String WiFiAddr = "";
 
+String command = "no_command";
+
 void startCameraServer();
 
 void setup()
@@ -188,7 +190,13 @@ void sendImageToSerial() {
 
 void loop()
 {
+    command = Serial.readStringUntil('\n');
+
+    if (command == "START") {
+      sendImageToSerial();
+      delay(500);
+    }
+    
     // Capture and send image
-    sendImageToSerial();
-    delay(500);
+
 }

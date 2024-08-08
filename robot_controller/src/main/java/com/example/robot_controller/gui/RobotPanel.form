@@ -33,7 +33,7 @@
           <gridbag weightx="0.0" weighty="0.0"/>
         </constraints>
         <properties>
-          <text value="Stop"/>
+          <text value=""/>
         </properties>
       </component>
       <component id="5f539" class="javax.swing.JButton" binding="leftButton" default-binding="true">

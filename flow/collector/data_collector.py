@@ -8,7 +8,7 @@ conf = {'bootstrap.servers': '51.107.12.112:80',
         "default.topic.config": {"auto.offset.reset": "earliest"},
         'group.id': 'FLOW_DATA_COLLECTOR'}
 
-get_data_url = "https://foodautomation-webapp.azurewebsites.net/robot/get_data"
+get_data_url = "http://localhost:8080/robot/data"
 
 
 class DataCollector:

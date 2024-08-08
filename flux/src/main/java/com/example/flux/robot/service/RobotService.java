@@ -123,6 +123,29 @@ public class RobotService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public Map<OutputDataType, List<Integer>> getDataFromOutputCommands(String token, Integer id)
+            throws NoGrantedAuthorityException {
+        this.jwtService.checkRole(token, Roles.ROLE_ADMIN);
+        Map<OutputDataType, List<Integer>> outputDataTypeListMap = new HashMap<>();
+        outputDataTypeListMap.put(OutputDataType.MANUAL, new ArrayList<>(this.robotsRepository.getReferenceById(id)
+                .getOutputData())
+                .stream()
+                .filter(outputData -> outputData.getOutputDataType().equals(OutputDataType.MANUAL))
+                .sorted(Comparator.comparing(OutputData::getId))
+                .map(OutputData::getValue)
+                .collect(Collectors.toList()));
+        outputDataTypeListMap.put(OutputDataType.AUTONOMOUS,
+                new ArrayList<>(this.robotsRepository.getReferenceById(id)
+                        .getOutputData())
+                        .stream()
+                        .filter(outputData -> outputData.getOutputDataType().equals(OutputDataType.AUTONOMOUS))
+                        .sorted(Comparator.comparing(OutputData::getId))
+                        .map(OutputData::getValue)
+                        .collect(Collectors.toList()));
+        return outputDataTypeListMap;
+    }
+
     public Map<String, List<?>> getData(Integer id) {
         Map<String, List<?>> robotData = new HashMap<>();
         robotData.put("ultrasonic_data", this.getDataFromUltrasonic(id));
@@ -134,6 +157,20 @@ public class RobotService {
     public void startRlModel(String token)
             throws NoGrantedAuthorityException {
         this.jwtService.checkRole(token, Roles.ROLE_ADMIN);
-        this.flowService.callEndpoint(FlowUtils.FLOW_RL_MODEL_TRAIN, null, HttpMethodsEnum.GET);
+        this.flowService.callEndpoint(FlowUtils.FLOW_RL_MODEL_TRAIN, null, HttpMethodsEnum.POST);
     }
+
+    public List<RobotEntity> getAll(String token)
+            throws NoGrantedAuthorityException {
+        this.jwtService.checkRole(token, Roles.ROLE_ADMIN);
+        return this.robotsRepository.findAll();
+    }
+
+    @Transactional
+    public void updateRobotEntity(String token, RobotEntity robotEntity)
+            throws NoGrantedAuthorityException {
+        this.jwtService.checkRole(token, Roles.ROLE_ADMIN);
+        this.robotsRepository.save(robotEntity);
+    }
+
 }
